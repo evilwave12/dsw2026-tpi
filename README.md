@@ -14,3 +14,9 @@ Instrucciones:
 * Tener en cuenta que ya se realizaron las migraciones de Identity, crear nuevas de ser necesario
 * Para más detalles, revisar la grabación de la última clase
 * El endpoint de registración de usuarios administradores está disponible para crear usuarios y poder hacer pruebas, a futuro se eliminará
+
+## INTEGRANTES
+Campos, Samira 58341
+Fernández, Guillermo Emanuel 57799
+Giuliante, Ian 58268
+Velloso Colombres, Nazarena 58340
