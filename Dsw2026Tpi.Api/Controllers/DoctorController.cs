@@ -23,4 +23,5 @@ public class DoctorController : AppController
         var doctors = await _service.GetAll(pageSize, pageIndex, name);
         return Ok(doctors);
     }
+
 }
