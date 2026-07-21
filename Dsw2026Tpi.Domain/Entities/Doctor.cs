@@ -23,6 +23,13 @@ public class Doctor: EntityBase
         Speciality = speciality;
         IsActive = true;
     }
+    public Doctor(Guid id, string name, string licenseNumber, Speciality speciality) : base(id)
+    {
+        Name = name;
+        LicenseNumber = licenseNumber;
+        Speciality = speciality;
+        IsActive = true;
+    }
 
     public void Deactivate()
     {

@@ -1,5 +1,6 @@
 ﻿using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Dsw2026Tpi.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -12,6 +13,14 @@ public class PersistenceEf: IPersistence
     public PersistenceEf(Dsw2026TpiDbContext context)
     {
         _context = context;
+        InitializeData();
+    }
+
+    public void InitializeData()
+    {
+        _context.Seedwork<Speciality>("Sources\\specialities.json");
+        _context.Seedwork<Doctor>("Sources\\doctors.json");
+
     }
 
     public async Task<T> Add<T>(T entity) where T : EntityBase
