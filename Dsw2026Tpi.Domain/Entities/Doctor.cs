@@ -1,4 +1,6 @@
-﻿namespace Dsw2026Tpi.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Dsw2026Tpi.Domain.Entities;
 
 public class Doctor: EntityBase
 {
@@ -23,6 +25,8 @@ public class Doctor: EntityBase
         Speciality = speciality;
         IsActive = true;
     }
+
+    [JsonConstructor]
     public Doctor(Guid id, string name, string licenseNumber, Speciality speciality) : base(id)
     {
         Name = name;

@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Text.Json.Serialization;
 
 namespace Dsw2026Tpi.Domain.Entities;
 
@@ -22,6 +23,7 @@ public class Speciality: EntityBase
         UpdatedAt = DateTime.Now;
     }
 
+    [JsonConstructor]
     public Speciality(Guid id, string name, string description) : base(id)
     {
         Name = name;
