@@ -1,5 +1,6 @@
 ﻿using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Identity;
+using Dsw2026Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,12 @@ public class SpecialityController : AppController
         return Ok(specialities);
     }
 
-
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var specialities = await _service.Delete(id);
+        return Ok(specialities);
+    }
 
 }
