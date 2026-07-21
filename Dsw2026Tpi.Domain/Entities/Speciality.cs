@@ -1,9 +1,12 @@
-﻿namespace Dsw2026Tpi.Domain.Entities;
+﻿using System.Data;
+
+namespace Dsw2026Tpi.Domain.Entities;
 
 public class Speciality: EntityBase
 {
     public string Name { get; init; }
     public string Description { get; init; }
+    public bool Deleted { get; private set; } = false;
 
     #region Constructor for EF
 #pragma warning disable CS8618
@@ -15,5 +18,20 @@ public class Speciality: EntityBase
     {
         Name = name;
         Description = description;
+        CreatedAt = DateTime.Now;
+        UpdatedAt = DateTime.Now;
+    }
+
+    public Speciality(Guid id, string name, string description) : base(id)
+    {
+        Name = name;
+        Description = description;
+        CreatedAt = DateTime.Now;
+        UpdatedAt = DateTime.Now;
+    }
+
+    public void Deactivate()
+    {
+        Deleted = true;
     }
 }

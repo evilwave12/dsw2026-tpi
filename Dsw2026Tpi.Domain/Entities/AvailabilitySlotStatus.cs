@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Dsw2026Tpi.Domain.Entities
 {
-    internal class AvailabilitySlotStatus
+    public enum AvailabilitySlotStatus
     {
+        Available = 1,
+        Booked = 2,
+        Blocked = 3,
     }
 }
