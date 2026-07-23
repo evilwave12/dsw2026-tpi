@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dsw2026Tpi.Domain.Entities
 {
-    public class AvailabilitySlot
+    public class AvailabilitySlot : EntityBase
     {
         public DateOnly Slot_date { get; init; }
         public TimeOnly Start_time { get; init; }
