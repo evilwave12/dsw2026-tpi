@@ -20,10 +20,18 @@ namespace Dsw2026Tpi.Application.Services
 
         public async Task<Pagination<SpecialityModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
         {
-            var specialities = await _persistence.Paginate<Speciality, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
+            if (name != null && (name.Length > 100 || name.Length < 3))
+            {
+                throw new ValidationException();
+            }
+            else
+            {
+                var specialities = await _persistence.Paginate<Speciality, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
                                                        s.Name.Contains(name)) && !s.Deleted, x => x.Name);
 
-            return specialities.Map(s => new SpecialityModel.Response(s.Id, s.Name, s.Description));
+                return specialities.Map(s => new SpecialityModel.Response(s.Id, s.Name, s.Description));
+            }
+            
         }
 
         public async Task<Speciality> Add(SpecialityModel.Request speciality)
