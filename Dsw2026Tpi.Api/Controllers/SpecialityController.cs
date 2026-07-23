@@ -1,4 +1,5 @@
-﻿using Dsw2026Tpi.Application.Interfaces;
+﻿using Dsw2026Tpi.Application.Dtos;
+using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Identity;
 using Dsw2026Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +24,22 @@ public class SpecialityController : AppController
         return Ok(specialities);
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task <IActionResult> Add([FromBody] SpecialityModel.Request speciality)
+    {
+        var specialities = await _service.Add(speciality);
+        return Ok(specialities);
+    }
+
+    [HttpPut("{id}")]
+
+    public async Task <IActionResult> Update([FromRoute] Guid id, [FromBody] SpecialityModel.Request speciality)
+    {
+        var specialities = await _service.Update(id, speciality);
+        return Ok(specialities);
+    }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
@@ -30,5 +47,7 @@ public class SpecialityController : AppController
         var specialities = await _service.Delete(id);
         return Ok(specialities);
     }
+
+    
 
 }
