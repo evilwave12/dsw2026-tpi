@@ -26,16 +26,52 @@ namespace Dsw2026Tpi.Application.Services
             return specialities.Map(s => new SpecialityModel.Response(s.Id, s.Name, s.Description));
         }
 
-        public async Task <Speciality> Delete(Guid id)
+        public async Task<Speciality> Add(SpecialityModel.Request speciality)
+        {
+            if (string.IsNullOrWhiteSpace(speciality.Name) || (speciality.Name.Length > 101 && speciality.Name.Length < 3))
+            {
+                throw new ValidationException();
+            }
+
+            if (string.IsNullOrWhiteSpace(speciality.Description) || (speciality.Description.Length > 101 && speciality.Description.Length < 11 ))
+            {
+                throw new ValidationException();
+            }
+
+            return await _persistence.Add(new Speciality(speciality.Name, speciality.Description));
+            
+        }
+
+        public async Task<Speciality> Delete(Guid id)
         {
             var speciality = await _persistence.GetById<Speciality>(id)
                 ?? throw new EntityNotFoundException(nameof(Speciality));
 
             speciality.Deactivate();
-            await _persistence.Update(speciality);
-
-            return speciality;
+            return await _persistence.Update(speciality);
         }
-    }
 
+        public async Task <Speciality> Update (Guid id, SpecialityModel.Request speciality)
+        {
+            if (string.IsNullOrWhiteSpace(speciality.Name) || (speciality.Name.Length > 101 && speciality.Name.Length < 3))
+            {
+                throw new ValidationException();
+            }
+
+            if (string.IsNullOrWhiteSpace(speciality.Description) || (speciality.Description.Length > 101 && speciality.Description.Length < 11))
+            {
+                throw new ValidationException();
+            }
+
+            var speciality2 = await _persistence.GetById<Speciality>(id)
+                ?? throw new EntityNotFoundException(nameof(Speciality));
+
+            speciality2.Name = speciality.Name;
+            speciality2.Description = speciality.Description;
+
+            return await _persistence.Update(speciality2);
+           
+        }
+
+    }
 }
