@@ -53,7 +53,53 @@ public class DoctorService : IDoctorService
         {
             var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == id_doctor);
 
-            return disponibilidades.Select(d => new AvailabilityModel.Response(d.Day_of_the_week,d.Start_time,d.End_time));
+            return disponibilidades.Select(d => new AvailabilityModel.Response(((DiaSemana)d.Day_of_the_week).ToString(), d.Start_time.ToString("HH:mm"), d.End_time.ToString("HH:mm")));
         }
     }
+
+    public async Task<Doctor> Add(DoctorModel.Request doctor) //post
+    {
+        if (string.IsNullOrWhiteSpace(doctor.Name) || (doctor.Name.Length > 101 && doctor.Name.Length < 3))
+        {
+            throw new ValidationException();
+        }
+
+        var speciality = await _persistence.GetById<Speciality>(doctor.SpecialityId)
+                ?? throw new EntityNotFoundException(nameof(Speciality));
+
+        return await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, speciality));
+
+    }
+
+    public async Task<Doctor> Update(Guid id, DoctorModel.Request doctor)
+    {
+        if (string.IsNullOrWhiteSpace(doctor.Name) || (doctor.Name.Length > 101 && doctor.Name.Length < 3))
+        {
+            throw new ValidationException();
+        }
+
+        var doctor2 = await _persistence.GetById<Doctor>(id)
+            ?? throw new EntityNotFoundException(nameof(Doctor));
+
+        doctor2.Name = doctor.Name;
+        doctor2.LicenseNumber = doctor.LicenseNumber;
+
+        if(doctor2.SpecialityId != doctor.SpecialityId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
+        {
+            var speciality = await _persistence.GetById<Speciality>(doctor.SpecialityId)
+            ?? throw new EntityNotFoundException(nameof(Speciality));
+
+            doctor2.SpecialityId = doctor.SpecialityId;
+        }
+        return await _persistence.Update(doctor2);
+    }
+
+    /*public async Task<Speciality> Delete(Guid id)
+    {
+        var speciality = await _persistence.GetById<Speciality>(id)
+            ?? throw new EntityNotFoundException(nameof(Speciality));
+
+        speciality.Deactivate();
+        return await _persistence.Update(speciality);
+    }*/
 }

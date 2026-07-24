@@ -4,11 +4,11 @@ namespace Dsw2026Tpi.Domain.Entities;
 
 public class Doctor: EntityBase
 {
-    public string Name { get; init; }
-    public string LicenseNumber { get; init; }
+    public string Name { get; set; }
+    public string LicenseNumber { get; set; }
     public bool IsActive { get; private set; }
     public Guid? SpecialityId { get; set; }
-    public Speciality? Speciality { get; private set; }
+    public Speciality? Speciality { get; set; }
 
     #region Constructor for EF
 #pragma warning disable CS8618

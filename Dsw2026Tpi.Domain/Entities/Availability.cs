@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Dsw2026Tpi.Domain.Entities
 {
@@ -26,6 +27,15 @@ namespace Dsw2026Tpi.Domain.Entities
         {
             Month = month;
             Year = year;
+            Day_of_the_week = day_of_the_week;
+            Start_time = start_time;
+            End_time = end_time;
+        }
+
+        [JsonConstructor]
+        public Availability(Guid id,byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
+        {
+            Doctor_Id = id;
             Day_of_the_week = day_of_the_week;
             Start_time = start_time;
             End_time = end_time;

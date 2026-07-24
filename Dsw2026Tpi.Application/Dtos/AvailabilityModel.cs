@@ -7,6 +7,18 @@ namespace Dsw2026Tpi.Application.Dtos
 {
     public record AvailabilityModel
     {
-        public record Response(byte Day_of_the_week, TimeOnly Start_time, TimeOnly End_time);
+        public record Response(string day_of_the_week, string start_time, string end_time);
+            
     }
+
+        public enum DiaSemana : byte
+        {
+            Lunes = 1,
+            Martes = 2,
+            Miércoles = 3,
+            Jueves = 4,
+            Viernes = 5,
+            Sábado = 6,
+            Domingo = 7
+        }
 }
