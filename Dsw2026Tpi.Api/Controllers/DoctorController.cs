@@ -1,4 +1,5 @@
-﻿using Dsw2026Tpi.Application.Interfaces;
+﻿using Dsw2026Tpi.Application.Dtos;
+using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dsw2026Tpi.Api.Controllers;
 
 [Route("doctors")]
-[Authorize(Policy = Policies.AdminPolicy)]
+//[Authorize(Policy = Policies.AdminPolicy)]
 public class DoctorController : AppController
 {
     private readonly IDoctorService _service;
@@ -28,10 +29,31 @@ public class DoctorController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAvailabilitiesByDoctorsId([FromRoute] Guid id)
     {
-        //var doctor = await _service.GetById(id);
         var availabilities = await _service.GetAvailabilities(id);
-
         return Ok(availabilities);
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Add([FromBody] DoctorModel.Request doctor)
+    {
+        var doctor2 = await _service.Add(doctor);
+        return Ok(doctor2);
+    }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] DoctorModel.Request doctor)
+    {
+        var doctor2 = await _service.Update(id, doctor);
+        return Ok(doctor2);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var doctor = await _service.Delete(id);
+        return Ok(doctor);
+    }
 }

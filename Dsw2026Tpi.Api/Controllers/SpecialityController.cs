@@ -47,7 +47,4 @@ public class SpecialityController : AppController
         var specialities = await _service.Delete(id);
         return Ok(specialities);
     }
-
-    
-
 }
