@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Dsw2026Tpi.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [Route("availabilities")]
+    //[Authorize(Policy = Policies.AdminPolicy)]
     public class AvailabilitiesController
     {
         private readonly IAvailabilityService _service;
@@ -23,8 +23,8 @@ namespace Dsw2026Tpi.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Add([FromBody] AvailabilityModel.Request request)
         {
-            await _service.CreateAvailabilitiesAsync(request);
-            return Ok();
+            var disponilidades = await _service.CreateAvailabilitiesAsync(request);
+            return Ok(disponilidades);
         }
 
         [HttpPut]
