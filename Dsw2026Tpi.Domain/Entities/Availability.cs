@@ -23,8 +23,9 @@ namespace Dsw2026Tpi.Domain.Entities
 #pragma warning restore CS8618
         #endregion
 
-        public Availability(byte month, short year, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
+        public Availability(Guid id, byte month, short year, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
         {
+            Doctor_Id = id;
             Month = month;
             Year = year;
             Day_of_the_week = day_of_the_week;
