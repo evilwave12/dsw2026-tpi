@@ -14,12 +14,12 @@ namespace Dsw2026Tpi.Application.Dtos
 
     public enum DiaSemana : byte
     {
-        Domingo = 0,
         Lunes = 1,
         Martes = 2,
-        Wednesday = 3,
-        Thursday = 4,
+        Miercoles = 3,
+        Jueves = 4,
         Viernes = 5,
-        Sábado = 6
+        Sábado = 6,
+        Domingo = 7
     }
 }
