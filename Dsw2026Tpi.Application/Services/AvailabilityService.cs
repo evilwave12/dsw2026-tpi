@@ -45,9 +45,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.StartTime, dayRequest.EndTime);
 
-                await _persistence.Add(availability);
-
-                await GenerateAndSaveSlotsAsync(availability, currentDate);
+                await ValidationAvailabilitiesAsync(request,doctor);
 
                 var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
                 availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
@@ -55,15 +53,8 @@ namespace Dsw2026Tpi.Application.Services
             return availabilities;
         }
 
-        public async Task UpdateAvailabilitiesAsync(AvailabilityModel.Request request)
+        public async Task ValidationAvailabilitiesAsync(AvailabilityModel.Request request, Doctor doctor)
         {
-            var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
-
-            if (doctor == null || !doctor.IsActive) 
-            { 
-                throw new EntityNotFoundException(nameof(Doctor));
-            }
-
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
             var currentYear = (byte)currentDate.Year;
@@ -75,7 +66,7 @@ namespace Dsw2026Tpi.Application.Services
                      a.Year == currentYear
             );
 
-            if (currentAvailabilities != null)
+            if (currentAvailabilities != null) //si se está intentando crear una disponibilidad en un dia donde un doctor ya tiene horario
             {
                 foreach (var newDayRequest in request.Days)
                 {
@@ -88,7 +79,7 @@ namespace Dsw2026Tpi.Application.Services
                     foreach (var existente in mismoDiaExistenteDisponilidades)
                     {
                         bool taSolapado = newDayRequest.StartTime < existente.End_time &&
-                                             newDayRequest.EndTime > existente.Start_time;
+                                          newDayRequest.EndTime > existente.Start_time;
 
                         if (taSolapado)
                         {
@@ -97,8 +88,7 @@ namespace Dsw2026Tpi.Application.Services
                     }
                 }
                 
-                 
-                foreach (var newDayRequest in request.Days)
+                foreach (var newDayRequest in request.Days) //si llega aqui es que no hay ningun conflicto de solapamiento
                 {
                     var numerin = MapStringToDayOfWeekNumber(newDayRequest.Day);
                     var newAvailability = new Availability
