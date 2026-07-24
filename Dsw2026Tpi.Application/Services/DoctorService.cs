@@ -25,8 +25,8 @@ public class DoctorService : IDoctorService
         }
         else
         {
-            var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => string.IsNullOrWhiteSpace(name) ||
-                                                       d.Name.Contains(name) && d.IsActive, x => x.Name, nameof(Doctor.Speciality));
+            var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => (string.IsNullOrWhiteSpace(name) ||
+                                                       d.Name.Contains(name)) && d.IsActive, x => x.Name, nameof(Doctor.Speciality));
 
             return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,
             new DoctorModel.SpecialityDto(d.Speciality?.Id, d.Speciality?.Name)));
@@ -94,12 +94,12 @@ public class DoctorService : IDoctorService
         return await _persistence.Update(doctor2);
     }
 
-    /*public async Task<Speciality> Delete(Guid id)
+    public async Task<Doctor> Delete(Guid id)
     {
-        var speciality = await _persistence.GetById<Speciality>(id)
-            ?? throw new EntityNotFoundException(nameof(Speciality));
+        var doctor = await _persistence.GetById<Doctor>(id)
+            ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        speciality.Deactivate();
-        return await _persistence.Update(speciality);
-    }*/
+        doctor.Deactivate();
+        return await _persistence.Update(doctor);
+    }
 }

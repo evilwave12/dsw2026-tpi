@@ -48,4 +48,12 @@ public class DoctorController : AppController
         var doctor2 = await _service.Update(id, doctor);
         return Ok(doctor2);
     }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var doctor = await _service.Delete(id);
+        return Ok(doctor);
+    }
 }
