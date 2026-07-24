@@ -51,7 +51,8 @@ namespace Dsw2026Tpi.Application.Services
 
                 await GenerateAndSaveSlotsAsync(availability, currentDate);
 
-                availabilities.Add(new AvailabilityModel.Response($" {dayOfWeekNumber}", $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
+                var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
+                availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
             }
             return availabilities;
         }
