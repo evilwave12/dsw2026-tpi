@@ -32,17 +32,15 @@ namespace Dsw2026Tpi.Application.Services
 
             foreach (var dayRequest in request.Days)
             {
-                var startTime = TimeOnly.Parse(dayRequest.StartTime);
-                var endTime = TimeOnly.Parse(dayRequest.EndTime);
 
-                if (startTime >= endTime)
+                if (dayRequest.StartTime >= dayRequest.EndTime)
                 {
                     throw new ValidationException();
                 }
 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.Day);
 
-                var availability = new Availability(currentMonth, currentYear, dayOfWeekNumber, startTime, endTime)
+                var availability = new Availability(currentMonth, currentYear, dayOfWeekNumber, dayRequest.StartTime, dayRequest.EndTime)
                 {
                     Doctor_Id = request.DoctorId
                 };
@@ -73,7 +71,7 @@ namespace Dsw2026Tpi.Application.Services
                     {
                         var slotEnd = slotStart.AddMinutes(30);
 
-                        var newSlot = new AvailabilitySlot(dateToProcess, slotStart, slotEnd)
+                        var newSlot = new AvailabilitySlot(rule.Id, dateToProcess, slotStart, slotEnd)
                         {
                             //REVISAR SI HAY QUE PONER UN AVAILABILITY_ID=RULE_ID
                         };
