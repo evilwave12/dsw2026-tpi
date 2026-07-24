@@ -18,7 +18,7 @@ namespace Dsw2026Tpi.Application.Services
             _persistence = persistence;
         }
 
-        public async Task CreateAvailabilitiesAsync(AvailabilityModel.Request request)
+        public async Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request)
         {
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
             if (doctor == null || !doctor.IsActive)
@@ -29,6 +29,8 @@ namespace Dsw2026Tpi.Application.Services
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
             var currentYear = (short)currentDate.Year;
+
+            var availabilities = new List<AvailabilityModel.Response>(); //ir guardando las disponibilidades creadas para devolverlas al final
 
             foreach (var dayRequest in request.Days)
             {
@@ -48,12 +50,15 @@ namespace Dsw2026Tpi.Application.Services
                 await _persistence.Add(availability);
 
                 await GenerateAndSaveSlotsAsync(availability, currentDate);
+
+                availabilities.Add(new AvailabilityModel.Response($" {dayOfWeekNumber}", $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
             }
+            return availabilities;
         }
-        public async Task UpdateAvailabilitiesAsync(AvailabilityModel.Request request)
+        /*public async Task UpdateAvailabilitiesAsync(AvailabilityModel.Request request)
         {
 
-        }
+        }*/
 
         private async Task GenerateAndSaveSlotsAsync(Availability rule, DateTime currentDate)
         {
@@ -73,7 +78,7 @@ namespace Dsw2026Tpi.Application.Services
 
                         var newSlot = new AvailabilitySlot(rule.Id, dateToProcess, slotStart, slotEnd)
                         {
-                            //REVISAR SI HAY QUE PONER UN AVAILABILITY_ID=RULE_ID
+                            AvailabilityId = rule.Id,
                         };
 
                         await _persistence.Add(newSlot);
