@@ -21,7 +21,7 @@ public class PersistenceEf: IPersistence
         _context.Seedwork<Speciality>("Sources\\specialities.json");
         _context.Seedwork<Doctor>("Sources\\doctors.json");
         _context.Seedwork<Availability>("Sources\\availabilities.json");
-
+        _context.Seedwork<Patient>("Sources\\patients.json");
     }
 
     public async Task<T> Add<T>(T entity) where T : EntityBase

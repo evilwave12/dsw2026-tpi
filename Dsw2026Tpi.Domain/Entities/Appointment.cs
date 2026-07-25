@@ -11,6 +11,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public DateTime? Attended_at { get; init; }
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Booked;
         public Guid Slot_Id { get; set; }
+        public Guid Patient_Id { get; set; }
 
         #region Constructor for EF
 #pragma warning disable CS8618
@@ -20,12 +21,11 @@ namespace Dsw2026Tpi.Domain.Entities
 #pragma warning restore CS8618
         #endregion
 
-        public Appointment(string reason, DateTime? cancelled_at, DateTime? attended_at, Guid slot_Id) : base()
+        public Appointment(string reason, Guid Slot_id, Guid Patient_id) : base()
         {
             Reason = reason;
-            Cancelled_at = cancelled_at;
-            Attended_at = attended_at;
-            Slot_Id = slot_Id;
+            Slot_Id = Slot_id;
+            Patient_Id = Patient_id;
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
         }
