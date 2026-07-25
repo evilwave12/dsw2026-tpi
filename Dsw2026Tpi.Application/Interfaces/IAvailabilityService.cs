@@ -10,6 +10,7 @@ namespace Dsw2026Tpi.Application.Interfaces
     public interface IAvailabilityService
     {
         Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request);
-        Task ValidationAvailabilitiesAsync(AvailabilityModel.Request request, Doctor doctor);
+        Task ValidationAvailabilitiesAsync(AvailabilityModel.Request request);
+        Task<IEnumerable<AvailabilityModel.Response>> Update(AvailabilityModel.Request request);
     }
 }
