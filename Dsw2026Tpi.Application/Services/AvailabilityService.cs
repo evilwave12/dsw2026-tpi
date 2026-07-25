@@ -45,15 +45,14 @@ namespace Dsw2026Tpi.Application.Services
 
                 var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.StartTime, dayRequest.EndTime);
 
-                await ValidationAvailabilitiesAsync(request,doctor);
-
                 var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
                 availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
             }
+            await ValidationAvailabilitiesAsync(request);
             return availabilities;
         }
 
-        public async Task ValidationAvailabilitiesAsync(AvailabilityModel.Request request, Doctor doctor)
+        public async Task ValidationAvailabilitiesAsync(AvailabilityModel.Request request)
         {
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
@@ -138,6 +137,53 @@ namespace Dsw2026Tpi.Application.Services
                 "sabado" or "sábado" => (byte)DayOfWeek.Saturday,
                 _ => throw new ValidationException()
             };
+        }
+
+        public async Task<IEnumerable<AvailabilityModel.Response>> Update(AvailabilityModel.Request request) //mismo codigo que post pero borramos todos los registros y escribimos nuevos ya con las modificaciones
+        {
+            var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
+            if (doctor == null || !doctor.IsActive)
+            {
+                throw new EntityNotFoundException(nameof(Doctor));
+            }
+
+            //
+            var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == request.DoctorId) ?? throw new EntityNotFoundException(nameof(Availability));
+            foreach (var dispo in disponibilidades)
+            {
+                var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.AvailabilityId == dispo.Id);
+                foreach (var slot in slots)
+                {
+                    await _persistence.Delete(slot);
+                }
+                await _persistence.Delete(dispo);
+            }
+
+            //
+
+            var currentDate = DateTime.Now;
+            var currentMonth = (byte)currentDate.Month;
+            var currentYear = (short)currentDate.Year;
+
+            var availabilities = new List<AvailabilityModel.Response>(); //ir guardando las disponibilidades creadas para devolverlas al final
+
+            foreach (var dayRequest in request.Days)
+            {
+
+                if (dayRequest.StartTime >= dayRequest.EndTime)
+                {
+                    throw new ValidationException();
+                }
+
+                var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.Day);
+
+                var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.StartTime, dayRequest.EndTime);
+
+                var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
+                availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
+            }
+            await ValidationAvailabilitiesAsync(request);
+            return availabilities;
         }
     }
 }

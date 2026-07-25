@@ -27,12 +27,12 @@ namespace Dsw2026Tpi.Api.Controllers
             return Ok(disponibilidades);
         }
 
-        /*[HttpPut]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] AvailabilityModel.Request request)
         {
-            var disponibilidad = await _service.UpdateAvailabilitiesAsync(request);
+            var disponibilidad = await _service.Update(request);
             return Ok(disponibilidad);
-        }*/
+        }
     }
 }
