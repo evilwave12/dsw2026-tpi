@@ -47,9 +47,9 @@ public class AppointmentController : AppController
     [HttpGet]
     //[Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetByDate([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
+    public async Task<IActionResult> GetByDate([FromQuery] DateOnly date)
     {
-        var appointments = await _service.GetByDate(year, month, day);
+        var appointments = await _service.GetByDate(date);
         return Ok(appointments);
     }
 

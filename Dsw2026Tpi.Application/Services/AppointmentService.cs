@@ -84,9 +84,10 @@ namespace Dsw2026Tpi.Application.Services
           
         }
 
-        public async Task<List<AppointmentModel.Response>> GetByDate(int year, int month, int day)
+        public async Task<List<AppointmentModel.Response>> GetByDate(DateOnly date)
         {
-            var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.Slot_date.Year == year && s.Slot_date.Month == month && s.Slot_date.Day == day && s.Status == AvailabilitySlotStatus.Booked);
+            var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.Slot_date == date && s.Status == AvailabilitySlotStatus.Booked)
+                ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
 
             var turnosdia = new List<AppointmentModel.Response>();
 
