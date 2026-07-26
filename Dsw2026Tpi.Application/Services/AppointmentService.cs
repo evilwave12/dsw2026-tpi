@@ -73,15 +73,15 @@ namespace Dsw2026Tpi.Application.Services
 
             appointment.Status = AppointmentStatus.Cancelled;
 
-            //aca no se si sumar esto ↓ :p
-            /*
-             * var slot = await _persistence.GetById<AvailabilitySlot>(appointment.Slot_Id);
+            await _persistence.Update(appointment);
+
+            var slot = await _persistence.GetById<AvailabilitySlot>(appointment.Slot_Id);
 
             if (slot != null) {
                 slot.Status = AvailabilitySlotStatus.Available;
                 await _persistence.Update(slot);
             }
-            */
+            
 
         }
 
