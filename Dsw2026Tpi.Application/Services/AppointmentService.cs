@@ -46,5 +46,46 @@ namespace Dsw2026Tpi.Application.Services
 
             return await _persistence.Add(new Appointment(cita.reason, slot.Id, paciente.Id));
         }
+
+        public async Task<IEnumerable<Appointment>> GetActiveAppointmentsByPatientDni(string dni) { 
+
+            var paciente = await _persistence.First<Patient>(p => p.Dni == dni && p.Deleted == false) ??
+                throw new EntityNotFoundException(nameof(Patient)); 
+
+            var activeAppointments = await _persistence.GetFiltered<Appointment>(
+                a => a.Patient_Id == paciente.Id &&
+                a.Status == AppointmentStatus.Booked
+                );
+
+            return activeAppointments ?? new List<Appointment>();
+        }
+
+        public async Task CancelAppointment(Guid id) {
+
+            var appointment = await _persistence.GetById<Appointment>(id)
+                ?? throw new EntityNotFoundException(nameof(Appointment));
+
+            if (appointment.Status != AppointmentStatus.Booked)
+            {
+                throw new ValidationException("No se puede cancelar la cita si no esta reservada.",
+                    "ESTADO_INVALIDO_TURNO"/*? o INVALID_APPOINTMENT_STATUS*/);
+            }
+
+            appointment.Status = AppointmentStatus.Cancelled;
+
+            await _persistence.Update(appointment);
+
+            var slot = await _persistence.GetById<AvailabilitySlot>(appointment.Slot_Id);
+
+            if (slot != null) {
+                slot.Status = AvailabilitySlotStatus.Available;
+                await _persistence.Update(slot);
+            }
+            
+
+        }
+
+
+
     }
 }
