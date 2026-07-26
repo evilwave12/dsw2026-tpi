@@ -81,8 +81,31 @@ namespace Dsw2026Tpi.Application.Services
                 slot.Status = AvailabilitySlotStatus.Available;
                 await _persistence.Update(slot);
             }
-            
+          
+        }
 
+        public async Task<List<AppointmentModel.Response>> GetByDate(int year, int month, int day)
+        {
+            var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.Slot_date.Year == year && s.Slot_date.Month == month && s.Slot_date.Day == day && s.Status == AvailabilitySlotStatus.Booked);
+
+            var turnosdia = new List<AppointmentModel.Response>();
+
+            foreach (var slot in slots)
+            {
+                var disponibilidad = await _persistence.GetById<Availability>(slot.AvailabilityId);
+
+                var doctor = await _persistence.GetById<Doctor>(disponibilidad.Doctor_Id);
+
+                var appointment = await _persistence.First<Appointment>(a => a.Slot_Id == slot.Id);
+
+                var paciente = await _persistence.GetById<Patient>(appointment.Patient_Id);
+
+                turnosdia.Add(new AppointmentModel.Response(doctor.Id, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
+            }
+
+            return turnosdia;
+                
+            
         }
 
 

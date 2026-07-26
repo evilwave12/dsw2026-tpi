@@ -13,5 +13,6 @@ namespace Dsw2026Tpi.Application.Interfaces
 
         Task<Appointment> Add(AppointmentModel.Request cita);
         Task CancelAppointment(Guid id);
+        Task<List<AppointmentModel.Response>> GetByDate(int year, int month, int day);
     }
 }

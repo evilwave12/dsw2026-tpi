@@ -26,17 +26,11 @@ public class AppointmentController : AppController
         return Ok(appointment2);
     }
 
-    //GET appointments/patient?dni={dni}
-    [HttpGet("patient")]
+  
+    [HttpGet("{dni}/patient")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetActiveAppointmentsByPatient([FromQuery] string dni)
+    public async Task<IActionResult> GetActiveAppointmentsByPatient([FromRoute] string dni)
     {
-        /* ↓this es una validacion pero bueno la dejo comentada por si las dudas↓
-        if (string.IsNullOrEmpty(dni)) 
-        {
-            return BadRequest("el DNI es requerido");
-        }
-        */
         var appointments = await _service.GetActiveAppointmentsByPatientDni(dni);
         return Ok(appointments);
     }
@@ -49,6 +43,16 @@ public class AppointmentController : AppController
         await _service.CancelAppointment(id);
         return NoContent();
     }
+
+    [HttpGet]
+    //[Authorize(Policy = Policies.AdminPolicy)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetByDate([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
+    {
+        var appointments = await _service.GetByDate(year, month, day);
+        return Ok(appointments);
+    }
+
 
 }
 
