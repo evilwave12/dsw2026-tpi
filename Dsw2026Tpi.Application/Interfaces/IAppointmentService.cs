@@ -10,9 +10,10 @@ namespace Dsw2026Tpi.Application.Interfaces
     public interface IAppointmentService
     {
         Task<IEnumerable<Appointment>> GetActiveAppointmentsByPatientDni(string dni);
-
         Task<Appointment> Add(AppointmentModel.Request cita);
         Task CancelAppointment(Guid id);
-        Task<List<AppointmentModel.Response>> GetByDate(DateOnly year);
+        Task<List<AppointmentModel.ResponseGetByDate>> GetByDate(DateOnly date);
+        Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialityId = null, Guid? doctorId = null, string? dni = null, DateOnly? date = null);
+
     }
 }

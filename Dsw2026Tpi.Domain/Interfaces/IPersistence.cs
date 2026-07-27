@@ -13,4 +13,7 @@ public interface IPersistence
     Task<T> Update<T>(T entity) where T : EntityBase;
     Task<T> Delete<T>(T entity) where T : EntityBase;
     Task<Pagination<T>> Paginate<T, TKey>(int pageSize, int pageIndex, Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> sortOrder, params string[] includes) where T : EntityBase;
+
+    IQueryable<T> Query<T>() where T : EntityBase; //para el ultimo endpoint de appointment
+    Task<Pagination<T>> Paginate<T>(int pageSize, int pageIndex, IQueryable<T> query); //para el ultimo endpoint de appointment
 }
