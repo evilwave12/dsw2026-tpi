@@ -44,6 +44,10 @@ namespace Dsw2026Tpi.Application.Services
                 throw new ValidationException(); //Motivo inválido
             }
 
+            slot.Status = AvailabilitySlotStatus.Booked; //se registra el turno como reservado
+
+            await _persistence.Update(slot);
+            
             return await _persistence.Add(new Appointment(cita.reason, slot.Id, paciente.Id));
         }
 
@@ -97,7 +101,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 var doctor = await _persistence.GetById<Doctor>(disponibilidad.Doctor_Id);
 
-                var appointment = await _persistence.First<Appointment>(a => a.Slot_Id == slot.Id);
+                var appointment = await _persistence.First<Appointment>(a => a.Slot_Id == slot.Id && a.Status == AppointmentStatus.Booked);
 
                 var paciente = await _persistence.GetById<Patient>(appointment.Patient_Id);
 
