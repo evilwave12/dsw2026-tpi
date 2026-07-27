@@ -1,8 +1,10 @@
-﻿using Dsw2026Tpi.Application.Dtos;
+﻿using Azure;
+using Dsw2026Tpi.Application.Dtos;
 using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -88,12 +90,12 @@ namespace Dsw2026Tpi.Application.Services
           
         }
 
-        public async Task<List<AppointmentModel.Response>> GetByDate(DateOnly date)
+        public async Task<List<AppointmentModel.ResponseGetByDate>> GetByDate(DateOnly date)
         {
             var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.Slot_date == date && s.Status == AvailabilitySlotStatus.Booked)
                 ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
 
-            var turnosdia = new List<AppointmentModel.Response>();
+            var turnosdia = new List<AppointmentModel.ResponseGetByDate>();
 
             foreach (var slot in slots)
             {
@@ -105,15 +107,57 @@ namespace Dsw2026Tpi.Application.Services
 
                 var paciente = await _persistence.GetById<Patient>(appointment.Patient_Id);
 
-                turnosdia.Add(new AppointmentModel.Response(doctor.Id, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
+                turnosdia.Add(new AppointmentModel.ResponseGetByDate(doctor.Id, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
             }
 
             return turnosdia;
-                
-            
         }
 
+        public async Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialityId = null, Guid? doctorId = null,
+                                                                                       string? dni = null,
+                                                                                       DateOnly? date = null)
+        {
 
+            var query = from appointment in _persistence.Query<Appointment>()
+
+                join patient in _persistence.Query<Patient>() on appointment.Patient_Id equals patient.Id
+
+                join slot in _persistence.Query<AvailabilitySlot>() on appointment.Slot_Id equals slot.Id
+
+                join availability in _persistence.Query<Availability>() on slot.AvailabilityId equals availability.Id
+
+                join doctor in _persistence.Query<Doctor>() on availability.Doctor_Id equals doctor.Id
+
+                join speciality in _persistence.Query<Speciality>() on doctor.SpecialityId equals speciality.Id
+
+                select new
+                {
+                    Appointment = appointment,
+                    Patient = patient,
+                    Slot = slot,
+                    Doctor = doctor,
+                    Speciality = speciality
+                };
+
+            if (doctorId.HasValue)
+                query = query.Where(x => x.Doctor.Id == doctorId);
+
+            if (specialityId.HasValue)
+                query = query.Where(x => x.Speciality.Id == specialityId);
+
+            if (!string.IsNullOrWhiteSpace(dni))
+                query = query.Where(x => x.Patient.Dni == dni);
+
+            if (date.HasValue)
+                query = query.Where(x => x.Slot.Slot_date == date);
+
+
+            var queryOrdenada = query.OrderBy(x => x.Slot.Slot_date).ThenBy(x => x.Slot.Start_time);
+
+            var citas = await _persistence.Paginate(pageSize, pageIndex, queryOrdenada);
+
+            return citas.Map(x => new AppointmentModel.ResponseGetBySearch(x.Speciality.Name, x.Doctor.Name, x.Slot.Slot_date, x.Slot.Start_time, x.Slot.End_time));
+        }
 
     }
 }
