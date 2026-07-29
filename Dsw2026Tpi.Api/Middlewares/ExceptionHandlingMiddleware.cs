@@ -43,6 +43,7 @@ public class ExceptionHandlingMiddleware
             AuthorizationException => HttpStatusCode.Unauthorized,
             _ => HttpStatusCode.InternalServerError,
         };
+
         var result = JsonSerializer.Serialize(error);
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)status;

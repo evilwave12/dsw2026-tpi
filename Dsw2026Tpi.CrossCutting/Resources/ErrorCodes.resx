@@ -123,8 +123,17 @@
   <data name="AUTHORIZATION_FAILED" xml:space="preserve">
     <value>Se requieren permisos para la operación solicitada</value>
   </data>
+  <data name="DOCTOR_INACTIVE" xml:space="preserve">
+    <value>El médico ya está eliminado</value>
+  </data>
   <data name="ENTITY_NOTFOUND" xml:space="preserve">
     <value>La entidad {0} no se encontró</value>
+  </data>
+  <data name="LICENSE_ERROR" xml:space="preserve">
+    <value>El número de licencia no puede ser vacio</value>
+  </data>
+  <data name="NAME_ERROR" xml:space="preserve">
+    <value>El nombre debe tener entre 3 y 100 caracteres</value>
   </data>
   <data name="REGISTER_USER_CONFLICT" xml:space="preserve">
     <value>Se produjo un error al registrar el usuario</value>
