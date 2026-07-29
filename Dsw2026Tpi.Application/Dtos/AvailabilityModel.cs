@@ -8,18 +8,18 @@ namespace Dsw2026Tpi.Application.Dtos
     public record AvailabilityModel
     {
         public record Response(string day_of_the_week, string start_time, string end_time);
-        public record DayRequest(string Day, TimeOnly StartTime, TimeOnly EndTime);
+        public record DayRequest(string day_of_the_week, TimeOnly start_time, TimeOnly end_time);
         public record Request(Guid DoctorId, IEnumerable<DayRequest> Days);
     }
 
     public enum DiaSemana : byte
     {
+        Domingo = 0,
         Lunes = 1,
         Martes = 2,
         Miercoles = 3,
         Jueves = 4,
         Viernes = 5,
-        Sábado = 6,
-        Domingo = 7
+        Sábado = 6
     }
 }

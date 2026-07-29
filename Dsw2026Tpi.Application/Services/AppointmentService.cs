@@ -53,7 +53,7 @@ namespace Dsw2026Tpi.Application.Services
             return await _persistence.Add(new Appointment(cita.reason, slot.Id, paciente.Id));
         }
 
-        public async Task<IEnumerable<Appointment>> GetActiveAppointmentsByPatientDni(string dni) { 
+        public async Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni) { 
 
             var paciente = await _persistence.First<Patient>(p => p.Dni == dni && p.Deleted == false) ??
                 throw new EntityNotFoundException(nameof(Patient)); 
@@ -63,7 +63,14 @@ namespace Dsw2026Tpi.Application.Services
                 a.Status == AppointmentStatus.Booked
                 );
 
-            return activeAppointments ?? new List<Appointment>();
+            var lista = new List<AppointmentModel.Response>();
+
+            foreach (var turno in activeAppointments)
+            {
+                lista.Add(new AppointmentModel.Response(turno.Slot.Availability.Doctor_Id,dni,paciente.Name,turno.Slot.Start_time,turno.Slot.End_time));
+            }
+
+            return lista ?? new List<AppointmentModel.Response>();
         }
 
         public async Task CancelAppointment(Guid id) {
@@ -90,12 +97,12 @@ namespace Dsw2026Tpi.Application.Services
           
         }
 
-        public async Task<List<AppointmentModel.ResponseGetByDate>> GetByDate(DateOnly date)
+        public async Task<List<AppointmentModel.Response>> GetByDate(DateOnly date)
         {
             var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.Slot_date == date && s.Status == AvailabilitySlotStatus.Booked)
                 ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
 
-            var turnosdia = new List<AppointmentModel.ResponseGetByDate>();
+            var turnosdia = new List<AppointmentModel.Response>();
 
             foreach (var slot in slots)
             {
@@ -107,7 +114,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 var paciente = await _persistence.GetById<Patient>(appointment.Patient_Id);
 
-                turnosdia.Add(new AppointmentModel.ResponseGetByDate(doctor.Id, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
+                turnosdia.Add(new AppointmentModel.Response(doctor.Id, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
             }
 
             return turnosdia;
@@ -118,7 +125,26 @@ namespace Dsw2026Tpi.Application.Services
                                                                                        DateOnly? date = null)
         {
 
-            var query = from appointment in _persistence.Query<Appointment>()
+            var citas = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
+                        a =>
+                            (!doctorId.HasValue || a.Slot.Availability.Doctor_Id == doctorId) &&
+                            (!specialityId.HasValue || a.Slot.Availability.Doctor.Speciality.Id == specialityId) &&
+                            (string.IsNullOrWhiteSpace(dni) || a.Patient.Dni == dni) &&
+                            (!date.HasValue || a.Slot.Slot_date == date),
+
+                        a => a.Slot.Slot_date,
+
+                        nameof(Appointment.Patient),
+                        nameof(Appointment.Slot),
+                        $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}",
+                        $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}.{nameof(Availability.Doctor)}",
+                        $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}.{nameof(Availability.Doctor)}.{nameof(Doctor.Speciality)}"
+                        );
+
+
+            return citas.Map(c => new AppointmentModel.ResponseGetBySearch(c.Slot.Availability.Doctor.Speciality.Name, c.Slot.Availability.Doctor.Name, c.Slot.Slot_date, c.Slot.Start_time, c.Slot.End_time));
+
+            /*var query = from appointment in _persistence.Query<Appointment>()
 
                 join patient in _persistence.Query<Patient>() on appointment.Patient_Id equals patient.Id
 
@@ -156,7 +182,7 @@ namespace Dsw2026Tpi.Application.Services
 
             var citas = await _persistence.Paginate(pageSize, pageIndex, queryOrdenada);
 
-            return citas.Map(x => new AppointmentModel.ResponseGetBySearch(x.Speciality.Name, x.Doctor.Name, x.Slot.Slot_date, x.Slot.Start_time, x.Slot.End_time));
+            return citas.Map(x => new AppointmentModel.ResponseGetBySearch(x.Speciality.Name, x.Doctor.Name, x.Slot.Slot_date, x.Slot.Start_time, x.Slot.End_time));*/
         }
 
     }

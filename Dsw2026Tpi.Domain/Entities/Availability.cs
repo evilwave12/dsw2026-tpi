@@ -14,6 +14,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public TimeOnly Start_time { get; init; }
         public TimeOnly End_time { get; init; }
         public Guid Doctor_Id { get; set; }
+        public Doctor Doctor { get; private set; } //propiedad navegacion
 
         #region Constructor for EF
 #pragma warning disable CS8618
@@ -23,9 +24,9 @@ namespace Dsw2026Tpi.Domain.Entities
 #pragma warning restore CS8618
         #endregion
 
-        public Availability(Guid id, byte month, short year, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
+        public Availability(Guid doctorId, byte month, short year, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
         {
-            Doctor_Id = id;
+            Doctor_Id = doctorId;
             Month = month;
             Year = year;
             Day_of_the_week = day_of_the_week;
@@ -34,12 +35,15 @@ namespace Dsw2026Tpi.Domain.Entities
         }
 
         [JsonConstructor]
-        public Availability(Guid id,byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
+        public Availability(Guid doctor_Id, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
         {
-            Doctor_Id = id;
+            Doctor_Id = doctor_Id;
             Day_of_the_week = day_of_the_week;
             Start_time = start_time;
             End_time = end_time;
+
+            Month = (byte)DateTime.Now.Month;
+            Year = (short)DateTime.Now.Year;
         }
     }
 }

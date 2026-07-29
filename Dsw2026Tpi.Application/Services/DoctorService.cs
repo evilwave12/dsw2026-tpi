@@ -67,7 +67,7 @@ public class DoctorService : IDoctorService
         var speciality = await _persistence.GetById<Speciality>(doctor.SpecialityId)
                 ?? throw new EntityNotFoundException(nameof(Speciality));
 
-        return await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, speciality));
+        return await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, doctor.SpecialityId));
 
     }
 
