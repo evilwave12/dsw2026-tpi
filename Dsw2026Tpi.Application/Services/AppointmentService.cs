@@ -26,26 +26,14 @@ namespace Dsw2026Tpi.Application.Services
             var slot = await _persistence.First<AvailabilitySlot>(s => s.AvailabilityId == cita.Id_Disponibilidad && s.Start_time == cita.hora.StartTime && s.End_time == cita.hora.EndTime) ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
             var paciente = await _persistence.First<Patient>(p => p.Dni == cita.dni && p.Deleted == false) ?? throw new EntityNotFoundException(nameof(Patient));
 
-            if(slot.Status != AvailabilitySlotStatus.Available)
-            {
-                throw new ValidationException(); //turno no disponible
-            }
-
-            if(slot.Slot_date < DateOnly.FromDateTime(DateTime.Now))
-            {
-                throw new ValidationException(); //turno en fecha pasada
-            }
-
-            if(cita.dni.Length < 7 || cita.dni.Length > 10)
-            {
-                throw new ValidationException(); //DNI inválido
-            }
-
-            if (cita.reason.Length < 5)
-            {
-                throw new ValidationException(); //Motivo inválido
-            }
-
+            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException("El turno no está disponible.", "SLOT_NOT_AVAILABLE_CONFLICT"); //turno no disponible
+            
+            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException("El turno está en una fecha pasada.", "PAST_DATE_CONFLICT"); //turno en fecha pasada
+            
+            if (cita.dni.Length < 7 || cita.dni.Length > 10) throw new ValidationException("El DNI no es válido.", "INVALID_DNI_ERROR"); //DNI inválido
+            
+            if (cita.reason.Length < 5) throw new ValidationException("El motivo no es válido.", "INVALID_REASON_ERROR"); //Motivo inválido
+            
             slot.Status = AvailabilitySlotStatus.Booked; //se registra el turno como reservado
 
             await _persistence.Update(slot);
@@ -80,8 +68,7 @@ namespace Dsw2026Tpi.Application.Services
 
             if (appointment.Status != AppointmentStatus.Booked)
             {
-                throw new ValidationException("No se puede cancelar la cita si no esta reservada.",
-                    "ESTADO_INVALIDO_TURNO"/*? o INVALID_APPOINTMENT_STATUS*/);
+                throw new ConflictException("No se puede cancelar la cita si no esta reservada.", "INVALID_APPOINTMENT_STATUS");
             }
 
             appointment.Status = AppointmentStatus.Cancelled;
@@ -90,7 +77,8 @@ namespace Dsw2026Tpi.Application.Services
 
             var slot = await _persistence.GetById<AvailabilitySlot>(appointment.Slot_Id);
 
-            if (slot != null) {
+            if (slot != null) 
+            {
                 slot.Status = AvailabilitySlotStatus.Available;
                 await _persistence.Update(slot);
             }
@@ -144,46 +132,7 @@ namespace Dsw2026Tpi.Application.Services
 
             return citas.Map(c => new AppointmentModel.ResponseGetBySearch(c.Slot.Availability.Doctor.Speciality.Name, c.Slot.Availability.Doctor.Name, c.Slot.Slot_date, c.Slot.Start_time, c.Slot.End_time));
 
-            /*var query = from appointment in _persistence.Query<Appointment>()
-
-                join patient in _persistence.Query<Patient>() on appointment.Patient_Id equals patient.Id
-
-                join slot in _persistence.Query<AvailabilitySlot>() on appointment.Slot_Id equals slot.Id
-
-                join availability in _persistence.Query<Availability>() on slot.AvailabilityId equals availability.Id
-
-                join doctor in _persistence.Query<Doctor>() on availability.Doctor_Id equals doctor.Id
-
-                join speciality in _persistence.Query<Speciality>() on doctor.SpecialityId equals speciality.Id
-
-                select new
-                {
-                    Appointment = appointment,
-                    Patient = patient,
-                    Slot = slot,
-                    Doctor = doctor,
-                    Speciality = speciality
-                };
-
-            if (doctorId.HasValue)
-                query = query.Where(x => x.Doctor.Id == doctorId);
-
-            if (specialityId.HasValue)
-                query = query.Where(x => x.Speciality.Id == specialityId);
-
-            if (!string.IsNullOrWhiteSpace(dni))
-                query = query.Where(x => x.Patient.Dni == dni);
-
-            if (date.HasValue)
-                query = query.Where(x => x.Slot.Slot_date == date);
-
-
-            var queryOrdenada = query.OrderBy(x => x.Slot.Slot_date).ThenBy(x => x.Slot.Start_time);
-
-            var citas = await _persistence.Paginate(pageSize, pageIndex, queryOrdenada);
-
-            return citas.Map(x => new AppointmentModel.ResponseGetBySearch(x.Speciality.Name, x.Doctor.Name, x.Slot.Slot_date, x.Slot.Start_time, x.Slot.End_time));*/
-        }
+        }  
 
     }
 }
