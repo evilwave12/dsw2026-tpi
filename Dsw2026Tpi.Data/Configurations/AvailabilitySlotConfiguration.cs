@@ -9,5 +9,9 @@ public class AvailabilitySlotConfiguration : IEntityTypeConfiguration<Availabili
     public void Configure(EntityTypeBuilder<AvailabilitySlot> builder)
     {
         builder.ToTable("AvailabilitySlots");
+
+        builder.HasOne(s => s.Availability)
+        .WithMany()
+        .HasForeignKey(s => s.AvailabilityId);
     }
 }

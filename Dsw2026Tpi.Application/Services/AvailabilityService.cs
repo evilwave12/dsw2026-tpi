@@ -3,6 +3,7 @@ using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -21,6 +22,13 @@ namespace Dsw2026Tpi.Application.Services
 
         public async Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request)
         {
+
+            /*traer todas las disponibilidades
+                foreach dispo in disponibilidades
+                reqe
+
+                    await ValidationAvailabilitiesAsync(reqe);*/
+
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
             if (doctor == null || !doctor.IsActive)
             {
@@ -36,14 +44,14 @@ namespace Dsw2026Tpi.Application.Services
             foreach (var dayRequest in request.Days)
             {
 
-                if (dayRequest.StartTime >= dayRequest.EndTime)
+                if (dayRequest.start_time >= dayRequest.end_time)
                 {
                     throw new ValidationException();
                 }
 
-                var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.Day);
+                var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
 
-                var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.StartTime, dayRequest.EndTime);
+                var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.start_time, dayRequest.end_time);
 
                 var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
                 availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
@@ -56,7 +64,7 @@ namespace Dsw2026Tpi.Application.Services
         {
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
-            var currentYear = (byte)currentDate.Year;
+            var currentYear = (short)currentDate.Year;
             var currentDay = (byte)currentDate.Day;
 
             var currentAvailabilities = await _persistence.GetFiltered<Availability>(
@@ -65,20 +73,20 @@ namespace Dsw2026Tpi.Application.Services
                      a.Year == currentYear
             );
 
-            if (currentAvailabilities != null) //si se está intentando crear una disponibilidad en un dia donde un doctor ya tiene horario
+            if (currentAvailabilities.Count() != 0 && !(currentAvailabilities is null)) //si se está intentando crear una disponibilidad en un dia donde un doctor ya tiene horario
             {
                 foreach (var newDayRequest in request.Days)
                 {
 
-                    var numerin = MapStringToDayOfWeekNumber(newDayRequest.Day);
+                    var numerin = MapStringToDayOfWeekNumber(newDayRequest.day_of_the_week);
                     var existingList = currentAvailabilities?.ToList() ?? new List<Availability>();
                     var mismoDiaExistenteDisponilidades = existingList
                         .Where(a => a.Day_of_the_week==numerin);
 
                     foreach (var existente in mismoDiaExistenteDisponilidades)
                     {
-                        bool taSolapado = newDayRequest.StartTime < existente.End_time &&
-                                          newDayRequest.EndTime > existente.Start_time;
+                        bool taSolapado = newDayRequest.start_time < existente.End_time &&
+                                          newDayRequest.end_time > existente.Start_time;
 
                         if (taSolapado)
                         {
@@ -86,17 +94,18 @@ namespace Dsw2026Tpi.Application.Services
                         }
                     }
                 }
-                
-                foreach (var newDayRequest in request.Days) //si llega aqui es que no hay ningun conflicto de solapamiento
-                {
-                    var numerin = MapStringToDayOfWeekNumber(newDayRequest.Day);
-                    var newAvailability = new Availability
-                    (request.DoctorId,currentMonth,currentYear,numerin,newDayRequest.StartTime,newDayRequest.EndTime);
-                    /*uwu*/
-                    await _persistence.Add(newAvailability);
+            }
 
-                    await GenerateAndSaveSlotsAsync(newAvailability, currentDate);
-                }
+            foreach (var newDayRequest in request.Days) //si llega aqui es que no hay ningun conflicto de solapamiento
+            {
+                var numerin = MapStringToDayOfWeekNumber(newDayRequest.day_of_the_week);
+
+                var newAvailability = new Availability
+                (request.DoctorId, currentMonth, currentYear, numerin, newDayRequest.start_time, newDayRequest.end_time);
+                /*uwu*/
+                await _persistence.Add(newAvailability);
+
+                await GenerateAndSaveSlotsAsync(newAvailability, currentDate);
             }
         }
 
@@ -170,14 +179,15 @@ namespace Dsw2026Tpi.Application.Services
             foreach (var dayRequest in request.Days)
             {
 
-                if (dayRequest.StartTime >= dayRequest.EndTime)
+                if (dayRequest.start_time >= dayRequest.end_time)
                 {
                     throw new ValidationException();
                 }
 
-                var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.Day);
+                var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
+                if (dayOfWeekNumber == 0) { dayOfWeekNumber = 7; }
 
-                var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.StartTime, dayRequest.EndTime);
+                var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.start_time, dayRequest.end_time);
 
                 var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
                 availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));

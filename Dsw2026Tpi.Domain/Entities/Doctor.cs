@@ -18,20 +18,20 @@ public class Doctor: EntityBase
 #pragma warning restore CS8618
     #endregion
 
-    public Doctor(string name, string licenseNumber, Speciality speciality, Guid? id = null) : base(id)
+    public Doctor(string name, string licenseNumber, Guid specialityId, Guid? id = null) : base(id)
     {
         Name = name;
         LicenseNumber = licenseNumber;
-        Speciality = speciality;
+        SpecialityId = specialityId;
         IsActive = true;
     }
 
     [JsonConstructor]
-    public Doctor(Guid id, string name, string licenseNumber, Speciality speciality) : base(id)
+    public Doctor(Guid id, string name, string licenseNumber, Guid? specialityId) : base(id)
     {
         Name = name;
         LicenseNumber = licenseNumber;
-        Speciality = speciality;
+        SpecialityId = specialityId;
         IsActive = true;
     }
 

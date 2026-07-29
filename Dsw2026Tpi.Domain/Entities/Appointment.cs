@@ -13,6 +13,9 @@ namespace Dsw2026Tpi.Domain.Entities
         public Guid Slot_Id { get; set; }
         public Guid Patient_Id { get; set; }
 
+        public AvailabilitySlot Slot { get; private set; } //propiedad navegacion
+        public Patient Patient { get; private set; } //propiedad navegacion
+
         #region Constructor for EF
 #pragma warning disable CS8618
         private Appointment ()

@@ -124,46 +124,4 @@ public class PersistenceEf : IPersistence
         }
         return includedQuery;
     }
-
-    public async Task<Pagination<T>> Paginate<T>(int pageSize, int pageIndex, IQueryable<T> query) //sobrecarga de paginate para ultimo endpoint de appointment
-    {
-        pageSize = Math.Abs(pageSize);
-        pageIndex = Math.Abs(pageIndex) == 0 ? 0 : Math.Abs(pageIndex) - 1;
-
-        var total = await query.CountAsync();
-
-        async Task<Pagination<T>> GetPage(int skip, int take)
-        {
-            var data = await query
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
-
-            return new Pagination<T>(pageSize, pageIndex, total, data);
-        }
-
-        if (total > pageSize * pageIndex)
-            return await GetPage(pageIndex * pageSize, pageSize);
-
-        if (total < pageSize)
-            return new Pagination<T>(pageSize, pageIndex, total, await query.ToListAsync());
-
-        var targetPageIndex = pageIndex - 1;
-
-        while (true)
-        {
-            if (total > targetPageIndex * pageSize)
-                return await GetPage(targetPageIndex * pageSize, pageSize);
-
-            targetPageIndex--;
-
-            if (targetPageIndex < 0)
-                return new Pagination<T>(pageSize, 0, 0, []);
-        }
-    }
-
-    public IQueryable<T> Query<T>() where T : EntityBase //para el ultimo endpoint de appointment
-    {
-        return _context.Set<T>();
-    }
 }
