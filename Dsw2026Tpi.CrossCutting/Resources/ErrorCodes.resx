@@ -123,6 +123,9 @@
   <data name="AUTHORIZATION_FAILED" xml:space="preserve">
     <value>Se requieren permisos para la operación solicitada</value>
   </data>
+  <data name="DESCRIPTION_ERROR" xml:space="preserve">
+    <value>La descripción debe tener entre 11 y 100 caracteres</value>
+  </data>
   <data name="DOCTOR_INACTIVE" xml:space="preserve">
     <value>El médico ya está eliminado</value>
   </data>
@@ -140,6 +143,12 @@
   </data>
   <data name="REGISTER_USER_INVALID" xml:space="preserve">
     <value>Datos de registración de usuario no válidos</value>
+  </data>
+  <data name="SPECIALITY_EXISTS" xml:space="preserve">
+    <value>La especialidad ya existe</value>
+  </data>
+  <data name="SPECIALITY_INACTIVE" xml:space="preserve">
+    <value>La especialidad ya está eliminada</value>
   </data>
   <data name="UNHANDLED_ERROR" xml:space="preserve">
     <value>Se produjo un error no controlado</value>

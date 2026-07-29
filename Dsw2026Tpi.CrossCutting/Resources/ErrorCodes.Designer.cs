@@ -79,6 +79,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a La descripción debe tener entre 11 y 100 caracteres.
+        /// </summary>
+        public static string DESCRIPTION_ERROR {
+            get {
+                return ResourceManager.GetString("DESCRIPTION_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El médico ya está eliminado.
         /// </summary>
         public static string DOCTOR_INACTIVE {
@@ -129,6 +138,24 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         public static string REGISTER_USER_INVALID {
             get {
                 return ResourceManager.GetString("REGISTER_USER_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La especialidad ya existe.
+        /// </summary>
+        public static string SPECIALITY_EXISTS {
+            get {
+                return ResourceManager.GetString("SPECIALITY_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La especialidad ya está eliminada.
+        /// </summary>
+        public static string SPECIALITY_INACTIVE {
+            get {
+                return ResourceManager.GetString("SPECIALITY_INACTIVE", resourceCulture);
             }
         }
         

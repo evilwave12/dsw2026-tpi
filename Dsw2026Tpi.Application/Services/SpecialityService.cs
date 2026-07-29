@@ -5,6 +5,7 @@ using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Dsw2026Tpi.Application.Services
@@ -18,61 +19,67 @@ namespace Dsw2026Tpi.Application.Services
             _persistence = persistence;
         }
 
-        public async Task<Pagination<SpecialityModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
+        public async Task<Pagination<SpecialityModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null) //finikited
         {
             if (name != null && (name.Length > 100 || name.Length < 3))
-            {
-                throw new ValidationException();
+            { 
+                throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres","NAME_ERROR");
             }
-            else
-            {
+
                 var specialities = await _persistence.Paginate<Speciality, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
                                                        s.Name.Contains(name)) && !s.Deleted, x => x.Name);
 
                 return specialities.Map(s => new SpecialityModel.Response(s.Id, s.Name, s.Description));
-            }
-            
         }
 
-        public async Task<Speciality> Add(SpecialityModel.Request speciality)
+        public async Task<Speciality> Add(SpecialityModel.Request speciality) //finikited
         {
-            if (string.IsNullOrWhiteSpace(speciality.Name) || (speciality.Name.Length > 101 && speciality.Name.Length < 3))
-            {
-                throw new ValidationException();
-            }
+            if (string.IsNullOrWhiteSpace(speciality.Name)) throw new ValidationException("El nombre no puede ser vacio", "NAME_ERROR");
 
-            if (string.IsNullOrWhiteSpace(speciality.Description) || (speciality.Description.Length > 101 && speciality.Description.Length < 11 ))
-            {
-                throw new ValidationException();
-            }
+            if (speciality.Name.Length > 101 || speciality.Name.Length < 3) throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres", "NAME_ERROR");  
+            
+            var especialidades = await _persistence.GetFiltered<Speciality>(s => s.Name == speciality.Name);
+
+            if (especialidades.Any()) throw new ConflictException("La especialidad ya existe", "SPECIALITY_EXISTS");
+           
+            if (string.IsNullOrWhiteSpace(speciality.Description)) throw new ValidationException("La descripcion no puede ser vacia", "DESCRIPTION_ERROR");
+
+            if (speciality.Description.Length > 101 || speciality.Description.Length < 11) throw new ValidationException("La descripcion debe tener entre 11 y 100 caracteres", "DESCRIPTION_ERROR");
 
             return await _persistence.Add(new Speciality(speciality.Name, speciality.Description));
             
         }
 
-        public async Task<Speciality> Delete(Guid id)
+        public async Task<Speciality> Delete(Guid id) //finikited
         {
-            var speciality = await _persistence.GetById<Speciality>(id)
-                ?? throw new EntityNotFoundException(nameof(Speciality));
+            var speciality = await _persistence.GetById<Speciality>(id) ?? throw new EntityNotFoundException(nameof(Speciality));
+
+            if (speciality.Deleted)
+            {
+                throw new ValidationException("La especialidad ya está eliminada", "SPECIALITY_INACTIVE");
+            }
 
             speciality.Deactivate();
+
             return await _persistence.Update(speciality);
         }
 
-        public async Task <Speciality> Update (Guid id, SpecialityModel.Request speciality)
+        public async Task <Speciality> Update (Guid id, SpecialityModel.Request speciality) //finikited
         {
-            if (string.IsNullOrWhiteSpace(speciality.Name) || (speciality.Name.Length > 101 && speciality.Name.Length < 3))
-            {
-                throw new ValidationException();
-            }
+            var speciality2 = await _persistence.GetById<Speciality>(id) ?? throw new EntityNotFoundException(nameof(Speciality));
 
-            if (string.IsNullOrWhiteSpace(speciality.Description) || (speciality.Description.Length > 101 && speciality.Description.Length < 11))
-            {
-                throw new ValidationException();
-            }
+            if (string.IsNullOrWhiteSpace(speciality.Name)) throw new ValidationException("El nombre no puede ser vacio", "NAME_ERROR");
 
-            var speciality2 = await _persistence.GetById<Speciality>(id)
-                ?? throw new EntityNotFoundException(nameof(Speciality));
+            if (speciality.Name.Length > 101 || speciality.Name.Length < 3) throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres", "NAME_ERROR");
+
+            if (string.IsNullOrWhiteSpace(speciality.Description)) throw new ValidationException("La descripcion no puede ser vacia", "DESCRIPTION_ERROR");
+
+            if (speciality.Description.Length > 101 || speciality.Description.Length < 11) throw new ValidationException("La descripcion debe tener entre 11 y 100 caracteres", "DESCRIPTION_ERROR");
+
+            if (speciality2.Deleted)
+            {
+                throw new ValidationException("La especialidad está eliminada", "SPECIALITY_INACTIVE");
+            }
 
             speciality2.Name = speciality.Name;
             speciality2.Description = speciality.Description;
