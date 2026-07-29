@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
+[ApiController]
 [Route("specialities")]
 public class SpecialityController : AppController
 {

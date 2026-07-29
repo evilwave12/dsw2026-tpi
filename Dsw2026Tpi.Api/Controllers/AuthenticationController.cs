@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
+
+[ApiController]
 [Route("auth")]
 public class AuthenticationController : AppController
 {
