@@ -23,17 +23,18 @@ namespace Dsw2026Tpi.Application.Services
         public async Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request)
         {
 
-            /*traer todas las disponibilidades
-                foreach dispo in disponibilidades
-                reqe
+            var disponibilidades = await _persistence.GetAll<Availability>();
 
-                    await ValidationAvailabilitiesAsync(reqe);*/
+            foreach (var dispo in disponibilidades)
+            {
+                await GenerateAndSaveSlotsAsync(dispo,DateTime.Now);
+            }
+            
 
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
-            if (doctor == null || !doctor.IsActive)
-            {
-                throw new EntityNotFoundException(nameof(Doctor));
-            }
+
+            if (doctor == null || !doctor.IsActive) throw new EntityNotFoundException(nameof(Doctor));
+            
 
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
@@ -46,7 +47,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 if (dayRequest.start_time >= dayRequest.end_time)
                 {
-                    throw new ValidationException();
+                    throw new ValidationException("El tiempo de inicio del turno no puede ser mayor o igual al tiempo de finalización.", "START_TIME_ERROR");
                 }
 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
@@ -67,10 +68,23 @@ namespace Dsw2026Tpi.Application.Services
             var currentYear = (short)currentDate.Year;
             var currentDay = (byte)currentDate.Day;
 
+            var dia = request.Days.First().day_of_the_week.ToLower() switch
+            {
+                "domingo" => (byte)DayOfWeek.Sunday,
+                "lunes" => (byte)DayOfWeek.Monday,
+                "martes" => (byte)DayOfWeek.Tuesday,
+                "miercoles" or "miércoles" => (byte)DayOfWeek.Wednesday,
+                "jueves" => (byte)DayOfWeek.Thursday,
+                "viernes" => (byte)DayOfWeek.Friday,
+                "sabado" or "sábado" => (byte)DayOfWeek.Saturday,
+                _ => throw new ConflictException("Día de la semana no válido.", "INVALID_DAY_CONFLICT")
+            };
+
             var currentAvailabilities = await _persistence.GetFiltered<Availability>(
                 a => a.Doctor_Id == request.DoctorId &&
                      a.Month == currentMonth &&
-                     a.Year == currentYear
+                     a.Year == currentYear &&
+                     a.Day_of_the_week == dia
             );
 
             if (currentAvailabilities.Count() != 0 && !(currentAvailabilities is null)) //si se está intentando crear una disponibilidad en un dia donde un doctor ya tiene horario
@@ -90,7 +104,7 @@ namespace Dsw2026Tpi.Application.Services
 
                         if (taSolapado)
                         {
-                            throw new ValidationException(); 
+                            throw new ConflictException("Las disponibilidades no pueden solaparse.", "SOLAPAMIENTO_CONFLICT");
                         }
                     }
                 }
@@ -144,23 +158,22 @@ namespace Dsw2026Tpi.Application.Services
                 "jueves" => (byte)DayOfWeek.Thursday,
                 "viernes" => (byte)DayOfWeek.Friday,
                 "sabado" or "sábado" => (byte)DayOfWeek.Saturday,
-                _ => throw new ValidationException()
+                _ => throw new ConflictException("Día de la semana no válido.", "INVALID_DAY_CONFLICT")
             };
         }
 
         public async Task<IEnumerable<AvailabilityModel.Response>> Update(AvailabilityModel.Request request) //mismo codigo que post pero borramos todos los registros y escribimos nuevos ya con las modificaciones
         {
-            var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
-            if (doctor == null || !doctor.IsActive)
-            {
-                throw new EntityNotFoundException(nameof(Doctor));
-            }
+            var doctor = await _persistence.GetById<Doctor>(request.DoctorId) ?? throw new EntityNotFoundException(nameof(Doctor)); ;
 
-            //
+            if (!doctor.IsActive) throw new ValidationException("El médico no está activo.", "DOCTOR_INACTIVE");
+            
             var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == request.DoctorId) ?? throw new EntityNotFoundException(nameof(Availability));
+
             foreach (var dispo in disponibilidades)
             {
                 var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.AvailabilityId == dispo.Id);
+
                 foreach (var slot in slots)
                 {
                     await _persistence.Delete(slot);
@@ -181,7 +194,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 if (dayRequest.start_time >= dayRequest.end_time)
                 {
-                    throw new ValidationException();
+                    throw new ConflictException("El tiempo de inicio debe ser anterior al tiempo de finalización.", "INVALID_TIME_CONFLICT");
                 }
 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);

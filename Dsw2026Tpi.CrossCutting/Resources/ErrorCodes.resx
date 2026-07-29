@@ -132,6 +132,12 @@
   <data name="ENTITY_NOTFOUND" xml:space="preserve">
     <value>La entidad {0} no se encontró</value>
   </data>
+  <data name="INVALID_DAY_CONFLICT" xml:space="preserve">
+    <value>Día de la semana no válido</value>
+  </data>
+  <data name="INVALID_TIME_CONFLICT" xml:space="preserve">
+    <value>El tiempo de inicio debe ser anterior al tiempo de finalización</value>
+  </data>
   <data name="LICENSE_ERROR" xml:space="preserve">
     <value>El número de licencia no puede ser vacio</value>
   </data>
@@ -144,11 +150,17 @@
   <data name="REGISTER_USER_INVALID" xml:space="preserve">
     <value>Datos de registración de usuario no válidos</value>
   </data>
+  <data name="SOLAPAMIENTO_CONFLICT" xml:space="preserve">
+    <value>Las disponibilidades no pueden solaparse</value>
+  </data>
   <data name="SPECIALITY_EXISTS" xml:space="preserve">
     <value>La especialidad ya existe</value>
   </data>
   <data name="SPECIALITY_INACTIVE" xml:space="preserve">
     <value>La especialidad ya está eliminada</value>
+  </data>
+  <data name="START_TIME_ERROR" xml:space="preserve">
+    <value>El tiempo de inicio del turno no puede ser mayor o igual al tiempo de finalización</value>
   </data>
   <data name="UNHANDLED_ERROR" xml:space="preserve">
     <value>Se produjo un error no controlado</value>

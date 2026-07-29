@@ -106,6 +106,24 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Día de la semana no válido.
+        /// </summary>
+        public static string INVALID_DAY_CONFLICT {
+            get {
+                return ResourceManager.GetString("INVALID_DAY_CONFLICT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El tiempo de inicio debe ser anterior al tiempo de finalización.
+        /// </summary>
+        public static string INVALID_TIME_CONFLICT {
+            get {
+                return ResourceManager.GetString("INVALID_TIME_CONFLICT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El número de licencia no puede ser vacio.
         /// </summary>
         public static string LICENSE_ERROR {
@@ -142,6 +160,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Las disponibilidades no pueden solaparse.
+        /// </summary>
+        public static string SOLAPAMIENTO_CONFLICT {
+            get {
+                return ResourceManager.GetString("SOLAPAMIENTO_CONFLICT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a La especialidad ya existe.
         /// </summary>
         public static string SPECIALITY_EXISTS {
@@ -156,6 +183,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         public static string SPECIALITY_INACTIVE {
             get {
                 return ResourceManager.GetString("SPECIALITY_INACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El tiempo de inicio del turno no puede ser mayor o igual al tiempo de finalización.
+        /// </summary>
+        public static string START_TIME_ERROR {
+            get {
+                return ResourceManager.GetString("START_TIME_ERROR", resourceCulture);
             }
         }
         
