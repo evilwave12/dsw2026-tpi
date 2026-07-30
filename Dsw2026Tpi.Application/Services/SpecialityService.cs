@@ -38,10 +38,10 @@ namespace Dsw2026Tpi.Application.Services
 
             if (speciality.Name.Length > 101 || speciality.Name.Length < 3) throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres", "NAME_ERROR");  
             
-            var especialidades = await _persistence.GetFiltered<Speciality>(s => s.Name == speciality.Name);
+            var especialidades = await _persistence.First<Speciality>(s => s.Name == speciality.Name);
 
-            if (especialidades.Any()) throw new ConflictException("La especialidad ya existe", "SPECIALITY_EXISTS");
-           
+            if (especialidades != null) throw new ConflictException("La especialidad ya existe", "SPECIALITY_EXISTS").WithDetail("Speciality_Name", "Speciality_Already_Exists");
+                   
             if (string.IsNullOrWhiteSpace(speciality.Description)) throw new ValidationException("La descripcion no puede ser vacia", "DESCRIPTION_ERROR");
 
             if (speciality.Description.Length > 101 || speciality.Description.Length < 11) throw new ValidationException("La descripcion debe tener entre 11 y 100 caracteres", "DESCRIPTION_ERROR");
@@ -50,23 +50,24 @@ namespace Dsw2026Tpi.Application.Services
             
         }
 
-        public async Task<Speciality> Delete(Guid id) //finikited
+        public async Task Delete(Guid id) //finikited
         {
             var speciality = await _persistence.GetById<Speciality>(id) ?? throw new EntityNotFoundException(nameof(Speciality));
 
             if (speciality.Deleted)
             {
-                throw new ValidationException("La especialidad ya está eliminada", "SPECIALITY_INACTIVE");
+                throw new ConflictException("La especialidad ya está eliminada", "SPECIALITY_INACTIVE");
             }
 
             speciality.Deactivate();
 
-            return await _persistence.Update(speciality);
+            await _persistence.Update(speciality);
         }
 
         public async Task <Speciality> Update (Guid id, SpecialityModel.Request speciality) //finikited
         {
             var speciality2 = await _persistence.GetById<Speciality>(id) ?? throw new EntityNotFoundException(nameof(Speciality));
+            if (speciality2.Deleted) throw new ConflictException("La especialidad está eliminada", "SPECIALITY_INACTIVE").WithDetail("Speciality_Deleted", "Speciality_Already_Deleted");
 
             if (string.IsNullOrWhiteSpace(speciality.Name)) throw new ValidationException("El nombre no puede ser vacio", "NAME_ERROR");
 
@@ -76,10 +77,6 @@ namespace Dsw2026Tpi.Application.Services
 
             if (speciality.Description.Length > 101 || speciality.Description.Length < 11) throw new ValidationException("La descripcion debe tener entre 11 y 100 caracteres", "DESCRIPTION_ERROR");
 
-            if (speciality2.Deleted)
-            {
-                throw new ValidationException("La especialidad está eliminada", "SPECIALITY_INACTIVE");
-            }
 
             speciality2.Name = speciality.Name;
             speciality2.Description = speciality.Description;

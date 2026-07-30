@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
-[ApiController]
-[Route("doctors")]
+[Route("api/doctors")]
 //[Authorize(Policy = Policies.AdminPolicy)]
 public class DoctorController : AppController
 {
@@ -54,7 +53,7 @@ public class DoctorController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var doctor = await _service.Delete(id);
-        return Ok(doctor);
+        await _service.Delete(id);
+        return Ok("Doctor eliminado correctamente");
     }
 }

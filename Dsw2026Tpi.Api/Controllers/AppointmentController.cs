@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dsw2026Tpi.Api.Controllers;
 
 
-[ApiController]
-[Route("appointments")]
+[Route("api/appointments")]
 //[Authorize(Policy = Policies.AdminPolicy)]
 public class AppointmentController : AppController
 {
@@ -39,11 +38,11 @@ public class AppointmentController : AppController
 
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CancelAppointment(Guid id) 
     {
         await _service.CancelAppointment(id);
-        return NoContent();
+        return Ok("Cita cancelada correctamente");
     }
 
     [HttpGet]

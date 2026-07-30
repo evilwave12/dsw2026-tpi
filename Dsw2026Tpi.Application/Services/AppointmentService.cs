@@ -19,16 +19,15 @@ namespace Dsw2026Tpi.Application.Services
         {
             _persistence = persistence;
         }
-        public async Task<Appointment> Add(AppointmentModel.Request cita) //post
+        public async Task<AppointmentModel.Response> Add(AppointmentModel.Request cita) //post
         {
             var doctor = await _persistence.GetById<Doctor>(cita.Id_doctor) ?? throw new EntityNotFoundException(nameof(Doctor));
-            var disponibilidad = await _persistence.GetById<Availability>(cita.Id_Disponibilidad) ?? throw new EntityNotFoundException(nameof(Availability));
-            var slot = await _persistence.First<AvailabilitySlot>(s => s.AvailabilityId == cita.Id_Disponibilidad && s.Start_time == cita.hora.StartTime && s.End_time == cita.hora.EndTime) ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
+            var slot = await _persistence.GetById<AvailabilitySlot>(cita.Id_Slot) ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
             var paciente = await _persistence.First<Patient>(p => p.Dni == cita.dni && p.Deleted == false) ?? throw new EntityNotFoundException(nameof(Patient));
 
-            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException("El turno no está disponible.", "SLOT_NOT_AVAILABLE_CONFLICT"); //turno no disponible
+            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException("El turno no está disponible.", "SLOT_NOT_AVAILABLE_CONFLICT").WithDetail("Slot_Status", "Slot_Not_Available");
             
-            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException("El turno está en una fecha pasada.", "PAST_DATE_CONFLICT"); //turno en fecha pasada
+            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException("El turno está en una fecha pasada.", "PAST_DATE_CONFLICT").WithDetail("Slot_Date", "Slot_In_Past_Date");
             
             if (cita.dni.Length < 7 || cita.dni.Length > 10) throw new ValidationException("El DNI no es válido.", "INVALID_DNI_ERROR"); //DNI inválido
             
@@ -37,8 +36,9 @@ namespace Dsw2026Tpi.Application.Services
             slot.Status = AvailabilitySlotStatus.Booked; //se registra el turno como reservado
 
             await _persistence.Update(slot);
-            
-            return await _persistence.Add(new Appointment(cita.reason, slot.Id, paciente.Id));
+            await _persistence.Add(new Appointment(cita.reason, slot.Id, paciente.Id));
+
+            return new AppointmentModel.Response(doctor.Id, doctor.Name, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time);
         }
 
         public async Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni) { 
@@ -55,7 +55,7 @@ namespace Dsw2026Tpi.Application.Services
 
             foreach (var turno in activeAppointments)
             {
-                lista.Add(new AppointmentModel.Response(turno.Slot.Availability.Doctor_Id,dni,paciente.Name,turno.Slot.Start_time,turno.Slot.End_time));
+                lista.Add(new AppointmentModel.Response(turno.Slot.Availability.Doctor_Id, turno.Slot.Availability.Doctor.Name, dni,paciente.Name,turno.Slot.Start_time,turno.Slot.End_time));
             }
 
             return lista ?? new List<AppointmentModel.Response>();
@@ -66,11 +66,10 @@ namespace Dsw2026Tpi.Application.Services
             var appointment = await _persistence.GetById<Appointment>(id)
                 ?? throw new EntityNotFoundException(nameof(Appointment));
 
-            if (appointment.Status != AppointmentStatus.Booked)
-            {
-                throw new ConflictException("No se puede cancelar la cita si no esta reservada.", "INVALID_APPOINTMENT_STATUS");
-            }
+            if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException("La cita ya fue cancelada", "INVALID_APPOINTMENT_STATUS");
 
+            if (appointment.Status != AppointmentStatus.Booked) throw new ConflictException("No se puede cancelar la cita si no esta reservada.", "INVALID_APPOINTMENT_STATUS");
+            
             appointment.Status = AppointmentStatus.Cancelled;
 
             await _persistence.Update(appointment);
@@ -102,7 +101,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 var paciente = await _persistence.GetById<Patient>(appointment.Patient_Id);
 
-                turnosdia.Add(new AppointmentModel.Response(doctor.Id, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
+                turnosdia.Add(new AppointmentModel.Response(doctor.Id, doctor.Name, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time));
             }
 
             return turnosdia;
