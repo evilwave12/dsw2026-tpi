@@ -25,9 +25,9 @@ namespace Dsw2026Tpi.Application.Services
             var slot = await _persistence.GetById<AvailabilitySlot>(cita.Id_Slot) ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
             var paciente = await _persistence.First<Patient>(p => p.Dni == cita.dni && p.Deleted == false) ?? throw new EntityNotFoundException(nameof(Patient));
 
-            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException("El turno no está disponible.", "SLOT_NOT_AVAILABLE_CONFLICT"); //turno no disponible
+            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException("El turno no está disponible.", "SLOT_NOT_AVAILABLE_CONFLICT").WithDetail("Slot_Status", "Slot_Not_Available");
             
-            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException("El turno está en una fecha pasada.", "PAST_DATE_CONFLICT"); //turno en fecha pasada
+            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException("El turno está en una fecha pasada.", "PAST_DATE_CONFLICT").WithDetail("Slot_Date", "Slot_In_Past_Date");
             
             if (cita.dni.Length < 7 || cita.dni.Length > 10) throw new ValidationException("El DNI no es válido.", "INVALID_DNI_ERROR"); //DNI inválido
             
