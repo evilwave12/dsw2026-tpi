@@ -198,7 +198,6 @@ namespace Dsw2026Tpi.Application.Services
                 }
 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
-                if (dayOfWeekNumber == 0) { dayOfWeekNumber = 7; }
 
                 var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.start_time, dayRequest.end_time);
 
