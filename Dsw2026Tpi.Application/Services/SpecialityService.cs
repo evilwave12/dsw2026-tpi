@@ -50,7 +50,7 @@ namespace Dsw2026Tpi.Application.Services
             
         }
 
-        public async Task<Speciality> Delete(Guid id) //finikited
+        public async Task Delete(Guid id) //finikited
         {
             var speciality = await _persistence.GetById<Speciality>(id) ?? throw new EntityNotFoundException(nameof(Speciality));
 
@@ -61,7 +61,7 @@ namespace Dsw2026Tpi.Application.Services
 
             speciality.Deactivate();
 
-            return await _persistence.Update(speciality);
+            await _persistence.Update(speciality);
         }
 
         public async Task <Speciality> Update (Guid id, SpecialityModel.Request speciality) //finikited

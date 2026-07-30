@@ -54,7 +54,7 @@ public class DoctorService : IDoctorService
         return await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, doctor.SpecialityId));
     }
 
-    public async Task<Doctor> Update(Guid id, DoctorModel.Request doctor) //finikited
+    public async Task<DoctorModel.Response> Update(Guid id, DoctorModel.Request doctor) //finikited
     {
         var doctor2 = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
@@ -68,24 +68,24 @@ public class DoctorService : IDoctorService
         doctor2.Name = doctor.Name;
         doctor2.LicenseNumber = doctor.LicenseNumber;
 
-        if(doctor2.SpecialityId != doctor.SpecialityId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
+        if (doctor2.SpecialityId != doctor.SpecialityId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
         {
             var speciality = await _persistence.GetById<Speciality>(doctor.SpecialityId) ?? throw new EntityNotFoundException(nameof(Speciality));
 
             doctor2.SpecialityId = doctor.SpecialityId;
         }
 
-        return await _persistence.Update(doctor2);
+        await _persistence.Update(doctor2);
+
+        return new DoctorModel.Response(doctor2.Id, doctor2.Name, doctor2.LicenseNumber, new DoctorModel.SpecialityDto(doctor2.Speciality?.Id, doctor2.Speciality?.Name));
     }
 
-    public async Task<Doctor> Delete(Guid id) //finikited
+    public async Task Delete(Guid id) //finikited
     {
         var doctor = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
         if(!doctor.IsActive) throw new ValidationException("El médico ya está eliminado", "DOCTOR_INACTIVE");
 
         doctor.Deactivate();
-
-        return await _persistence.Update(doctor);
     }
 }

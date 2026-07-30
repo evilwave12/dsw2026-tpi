@@ -53,7 +53,7 @@ public class DoctorController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var doctor = await _service.Delete(id);
-        return Ok(doctor);
+        await _service.Delete(id);
+        return Ok("Doctor eliminado correctamente");
     }
 }

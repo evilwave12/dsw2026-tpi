@@ -9,7 +9,7 @@ namespace Dsw2026Tpi.Application.Interfaces
     public interface ISpecialityService
     {
         Task<Pagination<SpecialityModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null);
-        Task<Speciality> Delete(Guid id);
+        Task Delete(Guid id);
         Task<Speciality> Add(SpecialityModel.Request speciality);
         Task <Speciality> Update (Guid id, SpecialityModel.Request speciality);
 
