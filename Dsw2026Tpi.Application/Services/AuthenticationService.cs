@@ -36,7 +36,7 @@ public class AuthenticationService : IAuthenticationService
         if (!request.Email.IsEmailValid()) throw new AuthenticationException();
         var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new AuthenticationException();
         var result = await _signInManager.CheckPassword(user, request.Password);
-
+                
         if (!result)
         {
             _logger.LogError("Intento de login fallido para: {Email}", request.Email);
