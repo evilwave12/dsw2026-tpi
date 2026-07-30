@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 namespace Dsw2026Tpi.Api.Controllers;
 
 
-[ApiController]
-[Route("availabilities")]
+[Route("api/availabilities")]
 //[Authorize(Policy = Policies.AdminPolicy)]
 public class AvailabilitiesController : AppController
 {

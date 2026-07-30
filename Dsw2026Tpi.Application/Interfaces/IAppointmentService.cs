@@ -9,7 +9,7 @@ namespace Dsw2026Tpi.Application.Interfaces
 {
     public interface IAppointmentService
     {
-        Task<Appointment> Add(AppointmentModel.Request cita);
+        Task<AppointmentModel.Response> Add(AppointmentModel.Request cita);
         Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni);
         Task CancelAppointment(Guid id);
         Task<List<AppointmentModel.Response>> GetByDate(DateOnly date);
