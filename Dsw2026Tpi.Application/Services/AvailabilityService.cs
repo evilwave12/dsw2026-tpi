@@ -5,6 +5,8 @@ using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
+using System.IO;
+using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
@@ -125,11 +127,18 @@ namespace Dsw2026Tpi.Application.Services
 
         private async Task GenerateAndSaveSlotsAsync(Availability rule, DateTime currentDate)
         {
+            var feriados = await GetHolidaysAsync();
+            var feriadosDates = feriados.Select(f => f.Date);
+
             int daysInMonth = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
 
             for (int day = currentDate.Day; day <= daysInMonth; day++)
             {
                 var dateToProcess = new DateOnly(currentDate.Year, currentDate.Month, day);
+
+                if (feriadosDates.Contains(dateToProcess)) {
+                    continue;
+                }
 
                 if ((int)dateToProcess.DayOfWeek == rule.Day_of_the_week)
                 {
@@ -147,6 +156,26 @@ namespace Dsw2026Tpi.Application.Services
                 }
             }
         }
+
+        private async Task<List<HolidayModel>> GetHolidaysAsync() 
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "feriado.json");
+
+            if (!File.Exists(filePath)) 
+            { 
+                return new List<HolidayModel>();
+            }
+
+            var jsonContent = await File.ReadAllTextAsync(filePath);
+
+            var options = new JsonSerializerOptions 
+                { 
+                PropertyNameCaseInsensitive = true
+                };
+
+            return JsonSerializer.Deserialize<List<HolidayModel>>(jsonContent,options) ?? new List<HolidayModel>();
+        }
+
         private byte MapStringToDayOfWeekNumber(string day)
         {
             return day.ToLower() switch
@@ -208,4 +237,5 @@ namespace Dsw2026Tpi.Application.Services
             return availabilities;
         }
     }
+
 }

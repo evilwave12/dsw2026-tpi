@@ -32,4 +32,11 @@ public class AuthenticationController : AppController
         var result = await _authenticationService.LoginAdmin(request);
         return Ok(result);
     }
+
+    [HttpPost("login/patient")]
+    public async Task<IActionResult> LoginPatient([FromBody] LoginPatientModel.Request request)
+    {
+        var response = await _authenticationService.LoginPatient(request);
+        return Ok(response);
+    }
 }

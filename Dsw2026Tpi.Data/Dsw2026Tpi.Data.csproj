@@ -23,6 +23,9 @@
     <None Update="Sources\availabilities.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Sources\feriados.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Sources\patients.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
