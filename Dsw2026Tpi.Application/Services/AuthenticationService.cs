@@ -4,8 +4,11 @@ using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.CrossCutting.Helpers;
 using Dsw2026Tpi.CrossCutting.Identity;
 using Dsw2026Tpi.CrossCutting.Resources;
+using Dsw2026Tpi.Data;
 using Dsw2026Tpi.Data.Identity;
+using Dsw2026Tpi.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Dsw2026Tpi.Application.Services;
@@ -17,18 +20,22 @@ public class AuthenticationService : IAuthenticationService
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JwtService _jwtService;
     private readonly ILogger<AuthenticationService> _logger;
+    private readonly Dsw2026TpiDbContext _context;
 
     public AuthenticationService(UserManager<ApplicationUser> userManager,
         ISignInService signInManager,
         RoleManager<IdentityRole> roleManager,
         JwtService jwtService,
-        ILogger<AuthenticationService> logger)
+        ILogger<AuthenticationService> logger,
+        Dsw2026TpiDbContext context)
+        
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _jwtService = jwtService;
         _logger = logger;
+        _context = context;
     }
 
     public async Task<LoginAdminModel.Response> LoginAdmin(LoginAdminModel.Request request)
@@ -53,9 +60,66 @@ public class AuthenticationService : IAuthenticationService
         );
     }
 
-    public async Task<LoginPatientModel.Response> LoginPatient(LoginPatientModel.Response request)
+    public async Task<LoginPatientModel.Response> LoginPatient(LoginPatientModel.Request request)
     {
-        throw new NotImplementedException();
+        if(string.IsNullOrWhiteSpace(request.Email) || !request.Email.IsEmailValid()) throw new ValidationException("INVALID_EMAIL_FORMAT", "El formato del mail no es válido"); ;
+        if(request.Dni< 1000000 || request.Dni> 99999999) throw new ValidationException("INVALID_DNI", "El DNI debe tener entre 7 y 8 dígitos"); ;
+
+
+        var patientDniString = request.Dni.ToString();
+        var patientPassword = $"{request.Email}A{request.Dni}"; //A mayus para que no tire error :u
+
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Dni == patientDniString);
+
+        if (user == null && existingPatient == null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = request.Email,
+                Email = request.Email,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            };
+
+            var result = await _userManager.CreateAsync(user, patientPassword);
+
+            if (!result.Succeeded) throw new ConflictException(nameof(ErrorCodes.REGISTER_USER_CONFLICT), ErrorCodes.REGISTER_USER_CONFLICT).WithDetail(result.Errors.Select(e => (e.Code, e.Description)));
+
+            _ = await _userManager.AddToRoleAsync(user, Roles.Patient);
+
+            var patient = new Patient(
+                name: "",                //?
+                phonenumber: "",         //?
+                dni: patientDniString
+                );
+            await _context.Patients.AddAsync(patient);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Paciente registrado: {request.Email}");
+        }
+        else if (user == null && existingPatient != null)
+        {
+            _logger.LogWarning($"Registro con DNI que ya existe: {request.Dni}");
+            throw new ConflictException("DUPLICATE_DNI", "El DNI ya se encuentra registrado con otro mail");
+        }
+        else
+        {
+            var result = await _signInManager.CheckPassword(user!, patientPassword);
+            if (!result)
+            {
+                _logger.LogError($"El DNI no concuerda con el mail para el paciente: {request.Email}");
+                throw new AuthenticationException();
+            }
+        }
+
+        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        var token = _jwtService.GenerateToken(user.UserName!, role);
+
+        return new LoginPatientModel.Response(
+            token,
+            role
+            );
     }
 
     public async Task<RegisterModel.Response> Register(RegisterModel.Request request)

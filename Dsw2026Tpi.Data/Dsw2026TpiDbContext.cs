@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dsw2026Tpi.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Dsw2026Tpi.Data;
 
 public class Dsw2026TpiDbContext: DbContext
 {
+
+    public DbSet<Patient> Patients { get; set; } //eliminar esto cuando se haga el repository
+
     public Dsw2026TpiDbContext(DbContextOptions<Dsw2026TpiDbContext> options):
         base(options)
     {
