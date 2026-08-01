@@ -41,7 +41,7 @@ namespace Dsw2026Tpi.Application.Services
             
             var especialidades = await _persistence.First<Speciality>(s => s.Name == speciality.Name);
 
-            if (especialidades != null) throw new ConflictException("La especialidad ya existe", "SPECIALITY_EXISTS").WithDetail("Speciality_Name", "Speciality_Already_Exists");
+            if (especialidades != null) throw new ConflictException(ErrorCodes.SPECIALITY_EXISTS, nameof(ErrorCodes.SPECIALITY_EXISTS)).WithDetail("name", "speciality_already_exists");
                    
             if (string.IsNullOrWhiteSpace(speciality.Description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
 
@@ -57,7 +57,7 @@ namespace Dsw2026Tpi.Application.Services
 
             if (speciality.Deleted)
             {
-                throw new ConflictException("La especialidad ya está eliminada", "SPECIALITY_INACTIVE");
+                throw new ConflictException(ErrorCodes.SPECIALITY_INACTIVE, nameof(ErrorCodes.SPECIALITY_INACTIVE));
             }
 
             speciality.Deactivate();
@@ -69,7 +69,7 @@ namespace Dsw2026Tpi.Application.Services
         {
             var speciality2 = await _persistence.GetById<Speciality>(id) ?? throw new EntityNotFoundException(nameof(Speciality));
 
-            if (speciality2.Deleted) throw new ConflictException("La especialidad está eliminada", "SPECIALITY_INACTIVE").WithDetail("Speciality_Deleted", "Speciality_Already_Deleted");
+            if (speciality2.Deleted) throw new ConflictException(ErrorCodes.SPECIALITY_INACTIVE, nameof(ErrorCodes.SPECIALITY_INACTIVE)).WithDetail("specialityDeleted", "speciality_already_deleted");
 
             if (string.IsNullOrWhiteSpace(speciality.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 

@@ -23,7 +23,7 @@ public class DoctorService : IDoctorService
         {
             throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
         }
-        else
+        else 
         {
             var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => (string.IsNullOrWhiteSpace(name) ||
                                                        d.Name.Contains(name)) && d.IsActive, x => x.Name, nameof(Doctor.Speciality));
@@ -42,13 +42,17 @@ public class DoctorService : IDoctorService
         return disponibilidades.Select(d => new AvailabilityModel.Response(((DiaSemana)d.Day_of_the_week).ToString(), d.Start_time.ToString("HH:mm"), d.End_time.ToString("HH:mm")));
     }
 
-    public async Task<Doctor> Add(DoctorModel.Request doctor) //finikited
+    public async Task<Doctor> Add(DoctorModel.Request doctor)
     {
         if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
         if(doctor.Name.Length > 101 || doctor.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.LICENSE_ERROR, nameof(ErrorCodes.LICENSE_ERROR    ));
+        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.LICENSE_ERROR, nameof(ErrorCodes.LICENSE_ERROR));
+
+        var matricula = await _persistence.GetFiltered<Doctor>(d => d.LicenseNumber == doctor.LicenseNumber);
+
+        if (matricula != null) throw new ConflictException(ErrorCodes.DUPLICATE_LICENSE_ERROR, nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR)).WithDetail("licenseNumber", "license_number_already_exists");
 
         var speciality = await _persistence.GetById<Speciality>(doctor.SpecialityId) ?? throw new EntityNotFoundException(nameof(Speciality));
 

@@ -48,7 +48,7 @@ namespace Dsw2026Tpi.Application.Services
             foreach (var dayRequest in request.Days)
             {
 
-                if (dayRequest.start_time >= dayRequest.end_time) throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("Start_Time", "Start_Time_After_End_Time");
+                if (dayRequest.start_time >= dayRequest.end_time) throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("startTime", "start_time_after_end_time");
                 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
 
@@ -218,7 +218,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 if (dayRequest.start_time >= dayRequest.end_time)
                 {
-                    throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("Start_Time", "Start_Time_After_End_Time");
+                    throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("startTime", "start_time_after_end_time");
                 }
 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);

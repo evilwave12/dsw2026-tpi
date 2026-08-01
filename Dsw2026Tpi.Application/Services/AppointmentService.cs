@@ -69,7 +69,7 @@ namespace Dsw2026Tpi.Application.Services
             var appointment = await _persistence.GetById<Appointment>(id)
                 ?? throw new EntityNotFoundException(nameof(Appointment));
 
-            if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException(ErrorCodes.INVALID_APPOINTMENT_STATUS, nameof(ErrorCodes.INVALID_APPOINTMENT_STATUS)).WithDetail("Appointment_Status", "Status_Already_Cancelled");
+            if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException(ErrorCodes.INVALID_APPOINTMENT_STATUS, nameof(ErrorCodes.INVALID_APPOINTMENT_STATUS)).WithDetail("appointmentStatus", "status_already_cancelled");
 
             if (appointment.Status != AppointmentStatus.Booked) throw new ValidationException(ErrorCodes.INVALID_APPOINTMENT_ERROR,nameof(ErrorCodes.INVALID_APPOINTMENT_ERROR));
             
