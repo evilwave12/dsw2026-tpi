@@ -2,6 +2,7 @@
 using Dsw2026Tpi.Application.Dtos;
 using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Exceptions;
+using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +23,18 @@ namespace Dsw2026Tpi.Application.Services
         public async Task<AppointmentModel.Response> Add(AppointmentModel.Request cita) //post
         {
             var doctor = await _persistence.GetById<Doctor>(cita.Id_doctor) ?? throw new EntityNotFoundException(nameof(Doctor));
+
             var slot = await _persistence.GetById<AvailabilitySlot>(cita.Id_Slot) ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
+
+            if (cita.dni.Length < 7 || cita.dni.Length > 10) throw new ValidationException(ErrorCodes.INVALID_DNI_ERROR, nameof(ErrorCodes.INVALID_DNI_ERROR)); //DNI inválido
+
             var paciente = await _persistence.First<Patient>(p => p.Dni == cita.dni && p.Deleted == false) ?? throw new EntityNotFoundException(nameof(Patient));
 
-            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException("El turno no está disponible.", "SLOT_NOT_AVAILABLE_CONFLICT").WithDetail("Slot_Status", "Slot_Not_Available");
+            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT, nameof(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT)).WithDetail("Slot_Status", "Slot_Not_Available");
+
+            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException(ErrorCodes.PAST_DATE_CONFLICT, nameof(ErrorCodes.PAST_DATE_CONFLICT)).WithDetail("Slot_Date", "Slot_In_Past_Date");
             
-            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException("El turno está en una fecha pasada.", "PAST_DATE_CONFLICT").WithDetail("Slot_Date", "Slot_In_Past_Date");
-            
-            if (cita.dni.Length < 7 || cita.dni.Length > 10) throw new ValidationException("El DNI no es válido.", "INVALID_DNI_ERROR"); //DNI inválido
-            
-            if (cita.reason.Length < 5) throw new ValidationException("El motivo no es válido.", "INVALID_REASON_ERROR"); //Motivo inválido
+            if (cita.reason.Length < 5) throw new ValidationException(ErrorCodes.INVALID_REASON_ERROR, nameof(ErrorCodes.INVALID_REASON_ERROR)); //Motivo inválido
             
             slot.Status = AvailabilitySlotStatus.Booked; //se registra el turno como reservado
 
@@ -66,9 +69,9 @@ namespace Dsw2026Tpi.Application.Services
             var appointment = await _persistence.GetById<Appointment>(id)
                 ?? throw new EntityNotFoundException(nameof(Appointment));
 
-            if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException("La cita ya fue cancelada", "INVALID_APPOINTMENT_STATUS");
+            if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException(ErrorCodes.INVALID_APPOINTMENT_STATUS, nameof(ErrorCodes.INVALID_APPOINTMENT_STATUS)).WithDetail("appointmentStatus", "status_already_cancelled");
 
-            if (appointment.Status != AppointmentStatus.Booked) throw new ConflictException("No se puede cancelar la cita si no esta reservada.", "INVALID_APPOINTMENT_STATUS");
+            if (appointment.Status != AppointmentStatus.Booked) throw new ValidationException(ErrorCodes.INVALID_APPOINTMENT_ERROR,nameof(ErrorCodes.INVALID_APPOINTMENT_ERROR));
             
             appointment.Status = AppointmentStatus.Cancelled;
 

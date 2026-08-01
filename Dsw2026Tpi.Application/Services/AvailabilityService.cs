@@ -1,15 +1,16 @@
 ﻿using Dsw2026Tpi.Application.Dtos;
 using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Exceptions;
+using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
-using System.IO;
-using System.Text.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 
 namespace Dsw2026Tpi.Application.Services
 {
@@ -47,11 +48,8 @@ namespace Dsw2026Tpi.Application.Services
             foreach (var dayRequest in request.Days)
             {
 
-                if (dayRequest.start_time >= dayRequest.end_time)
-                {
-                    throw new ValidationException("El tiempo de inicio del turno no puede ser mayor o igual al tiempo de finalización.", "START_TIME_ERROR");
-                }
-
+                if (dayRequest.start_time >= dayRequest.end_time) throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("startTime", "start_time_after_end_time");
+                
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
 
                 var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.start_time, dayRequest.end_time);
@@ -79,7 +77,7 @@ namespace Dsw2026Tpi.Application.Services
                 "jueves" => (byte)DayOfWeek.Thursday,
                 "viernes" => (byte)DayOfWeek.Friday,
                 "sabado" or "sábado" => (byte)DayOfWeek.Saturday,
-                _ => throw new ConflictException("Día de la semana no válido.", "INVALID_DAY_CONFLICT")
+                _ => throw new ValidationException(ErrorCodes.INVALID_DAY_ERROR, nameof(ErrorCodes.INVALID_DAY_ERROR))
             };
 
             var currentAvailabilities = await _persistence.GetFiltered<Availability>(
@@ -104,10 +102,7 @@ namespace Dsw2026Tpi.Application.Services
                         bool taSolapado = newDayRequest.start_time < existente.End_time &&
                                           newDayRequest.end_time > existente.Start_time;
 
-                        if (taSolapado)
-                        {
-                            throw new ConflictException("Las disponibilidades no pueden solaparse.", "SOLAPAMIENTO_CONFLICT");
-                        }
+                        if (taSolapado) throw new ConflictException(ErrorCodes.SOLAPAMIENTO_CONFLICT, nameof(ErrorCodes.SOLAPAMIENTO_CONFLICT)); //no se como hacerle los details a este
                     }
                 }
             }
@@ -187,7 +182,7 @@ namespace Dsw2026Tpi.Application.Services
                 "jueves" => (byte)DayOfWeek.Thursday,
                 "viernes" => (byte)DayOfWeek.Friday,
                 "sabado" or "sábado" => (byte)DayOfWeek.Saturday,
-                _ => throw new ConflictException("Día de la semana no válido.", "INVALID_DAY_CONFLICT")
+                _ => throw new ValidationException(ErrorCodes.INVALID_DAY_ERROR, nameof(ErrorCodes.INVALID_DAY_ERROR))
             };
         }
 
@@ -195,7 +190,7 @@ namespace Dsw2026Tpi.Application.Services
         {
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId) ?? throw new EntityNotFoundException(nameof(Doctor)); ;
 
-            if (!doctor.IsActive) throw new ValidationException("El médico no está activo.", "DOCTOR_INACTIVE");
+            if (!doctor.IsActive) throw new ValidationException(ErrorCodes.DOCTOR_INACTIVE, nameof(ErrorCodes.DOCTOR_INACTIVE));
             
             var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == request.DoctorId) ?? throw new EntityNotFoundException(nameof(Availability));
 
@@ -223,7 +218,7 @@ namespace Dsw2026Tpi.Application.Services
 
                 if (dayRequest.start_time >= dayRequest.end_time)
                 {
-                    throw new ConflictException("El tiempo de inicio debe ser anterior al tiempo de finalización.", "INVALID_TIME_CONFLICT");
+                    throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("startTime", "start_time_after_end_time");
                 }
 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
