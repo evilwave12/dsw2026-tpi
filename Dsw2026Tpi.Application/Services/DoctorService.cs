@@ -1,6 +1,7 @@
 ﻿using Dsw2026Tpi.Application.Dtos;
 using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Exceptions;
+using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using System.Numerics;
@@ -20,7 +21,7 @@ public class DoctorService : IDoctorService
     {
         if (name != null && (name.Length > 100 || name.Length < 3))
         {
-            throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres", "NAME_ERROR");
+            throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
         }
         else
         {
@@ -43,11 +44,11 @@ public class DoctorService : IDoctorService
 
     public async Task<Doctor> Add(DoctorModel.Request doctor) //finikited
     {
-        if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException("El nombre no puede ser vacio", "NAME_ERROR");
+        if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-        if(doctor.Name.Length > 101 || doctor.Name.Length < 3) throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres", "NAME_ERROR");
+        if(doctor.Name.Length > 101 || doctor.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException("El número de licencia no puede ser vacio", "LICENSE_ERROR");
+        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.LICENSE_ERROR, nameof(ErrorCodes.LICENSE_ERROR    ));
 
         var speciality = await _persistence.GetById<Speciality>(doctor.SpecialityId) ?? throw new EntityNotFoundException(nameof(Speciality));
 
@@ -58,11 +59,11 @@ public class DoctorService : IDoctorService
     {
         var doctor2 = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException("El nombre no puede ser vacio", "NAME_ERROR");
+        if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-        if (doctor.Name.Length > 101 || doctor.Name.Length < 3) throw new ValidationException("El nombre debe tener entre 3 y 100 caracteres", "NAME_ERROR");
+        if (doctor.Name.Length > 101 || doctor.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException("El número de licencia no puede ser vacio", "LICENSE_ERROR");
+        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.LICENSE_ERROR, nameof(ErrorCodes.LICENSE_ERROR));
 
 
         doctor2.Name = doctor.Name;
@@ -84,7 +85,7 @@ public class DoctorService : IDoctorService
     {
         var doctor = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        if(!doctor.IsActive) throw new ValidationException("El médico ya está eliminado", "DOCTOR_INACTIVE");
+        if(!doctor.IsActive) throw new ValidationException(ErrorCodes.DOCTOR_INACTIVE, nameof(ErrorCodes.DOCTOR_INACTIVE));
 
         doctor.Deactivate();
     }

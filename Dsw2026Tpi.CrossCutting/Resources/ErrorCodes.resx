@@ -129,11 +129,32 @@
   <data name="DOCTOR_INACTIVE" xml:space="preserve">
     <value>El médico ya está eliminado</value>
   </data>
+  <data name="DUPLICATE_LICENSE_ERROR" xml:space="preserve">
+    <value>La matrícula ingresada ya existe</value>
+  </data>
+  <data name="EMPTY_DESCRIPTION_ERROR" xml:space="preserve">
+    <value>La descripción no puede ser vacía</value>
+  </data>
+  <data name="EMPTY_NAME_ERROR" xml:space="preserve">
+    <value>Debe ingresar un nombre </value>
+  </data>
   <data name="ENTITY_NOTFOUND" xml:space="preserve">
     <value>La entidad {0} no se encontró</value>
   </data>
-  <data name="INVALID_DAY_CONFLICT" xml:space="preserve">
+  <data name="INVALID_APPOINTMENT_ERROR" xml:space="preserve">
+    <value>No se puede cancelar la cita si no está reservada</value>
+  </data>
+  <data name="INVALID_APPOINTMENT_STATUS" xml:space="preserve">
+    <value>La cita ya fue cancelada</value>
+  </data>
+  <data name="INVALID_DAY_ERROR" xml:space="preserve">
     <value>Día de la semana no válido</value>
+  </data>
+  <data name="INVALID_DNI_ERROR" xml:space="preserve">
+    <value>El DNI no es válido</value>
+  </data>
+  <data name="INVALID_REASON_ERROR" xml:space="preserve">
+    <value>La razón debe contener más de 5 caracteres</value>
   </data>
   <data name="INVALID_TIME_CONFLICT" xml:space="preserve">
     <value>El tiempo de inicio debe ser anterior al tiempo de finalización</value>
@@ -144,11 +165,17 @@
   <data name="NAME_ERROR" xml:space="preserve">
     <value>El nombre debe tener entre 3 y 100 caracteres</value>
   </data>
+  <data name="PAST_DATE_CONFLICT" xml:space="preserve">
+    <value>El turno está en una fecha pasada</value>
+  </data>
   <data name="REGISTER_USER_CONFLICT" xml:space="preserve">
     <value>Se produjo un error al registrar el usuario</value>
   </data>
   <data name="REGISTER_USER_INVALID" xml:space="preserve">
     <value>Datos de registración de usuario no válidos</value>
+  </data>
+  <data name="SLOT_NOT_AVAILABLE_CONFLICT" xml:space="preserve">
+    <value>El turno no está disponible</value>
   </data>
   <data name="SOLAPAMIENTO_CONFLICT" xml:space="preserve">
     <value>Las disponibilidades no pueden solaparse</value>

@@ -97,6 +97,33 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a La matrícula ingresada ya existe.
+        /// </summary>
+        public static string DUPLICATE_LICENSE_ERROR {
+            get {
+                return ResourceManager.GetString("DUPLICATE_LICENSE_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La descripción no puede ser vacía.
+        /// </summary>
+        public static string EMPTY_DESCRIPTION_ERROR {
+            get {
+                return ResourceManager.GetString("EMPTY_DESCRIPTION_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Debe ingresar un nombre .
+        /// </summary>
+        public static string EMPTY_NAME_ERROR {
+            get {
+                return ResourceManager.GetString("EMPTY_NAME_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a La entidad {0} no se encontró.
         /// </summary>
         public static string ENTITY_NOTFOUND {
@@ -106,11 +133,47 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No se puede cancelar la cita si no está reservada.
+        /// </summary>
+        public static string INVALID_APPOINTMENT_ERROR {
+            get {
+                return ResourceManager.GetString("INVALID_APPOINTMENT_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La cita ya fue cancelada.
+        /// </summary>
+        public static string INVALID_APPOINTMENT_STATUS {
+            get {
+                return ResourceManager.GetString("INVALID_APPOINTMENT_STATUS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Día de la semana no válido.
         /// </summary>
-        public static string INVALID_DAY_CONFLICT {
+        public static string INVALID_DAY_ERROR {
             get {
-                return ResourceManager.GetString("INVALID_DAY_CONFLICT", resourceCulture);
+                return ResourceManager.GetString("INVALID_DAY_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El DNI no es válido.
+        /// </summary>
+        public static string INVALID_DNI_ERROR {
+            get {
+                return ResourceManager.GetString("INVALID_DNI_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La razón debe contener más de 5 caracteres.
+        /// </summary>
+        public static string INVALID_REASON_ERROR {
+            get {
+                return ResourceManager.GetString("INVALID_REASON_ERROR", resourceCulture);
             }
         }
         
@@ -142,6 +205,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El turno está en una fecha pasada.
+        /// </summary>
+        public static string PAST_DATE_CONFLICT {
+            get {
+                return ResourceManager.GetString("PAST_DATE_CONFLICT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se produjo un error al registrar el usuario.
         /// </summary>
         public static string REGISTER_USER_CONFLICT {
@@ -156,6 +228,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         public static string REGISTER_USER_INVALID {
             get {
                 return ResourceManager.GetString("REGISTER_USER_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El turno no está disponible.
+        /// </summary>
+        public static string SLOT_NOT_AVAILABLE_CONFLICT {
+            get {
+                return ResourceManager.GetString("SLOT_NOT_AVAILABLE_CONFLICT", resourceCulture);
             }
         }
         
