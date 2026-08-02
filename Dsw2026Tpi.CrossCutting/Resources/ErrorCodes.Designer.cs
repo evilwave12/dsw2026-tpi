@@ -178,6 +178,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a La especialidad ingresada está eliminada.
+        /// </summary>
+        public static string INVALID_SPECIALITY_ERROR {
+            get {
+                return ResourceManager.GetString("INVALID_SPECIALITY_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El tiempo de inicio debe ser anterior al tiempo de finalización.
         /// </summary>
         public static string INVALID_TIME_CONFLICT {

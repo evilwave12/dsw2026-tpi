@@ -54,6 +54,6 @@ public class DoctorController : AppController
     public async Task<IActionResult> Delete(Guid id)
     {
         await _service.Delete(id);
-        return Ok("Doctor eliminado correctamente");
+        return Ok("ok");
     }
 }

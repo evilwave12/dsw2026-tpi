@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
+using static Dsw2026Tpi.Application.Dtos.AvailabilityModel;
 
 namespace Dsw2026Tpi.Application.Services
 {
@@ -26,13 +27,13 @@ namespace Dsw2026Tpi.Application.Services
         public async Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request)
         {
 
+            //cargar los slots desde las disponibilidades existentes por el json
             var disponibilidades = await _persistence.GetAll<Availability>();
-
             foreach (var dispo in disponibilidades)
             {
                 await GenerateAndSaveSlotsAsync(dispo,DateTime.Now);
             }
-            
+            //
 
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
 
@@ -68,56 +69,42 @@ namespace Dsw2026Tpi.Application.Services
             var currentYear = (short)currentDate.Year;
             var currentDay = (byte)currentDate.Day;
 
-            var dia = request.Days.First().day_of_the_week.ToLower() switch
+            foreach(var dayRequest in request.Days)
             {
-                "domingo" => (byte)DayOfWeek.Sunday,
-                "lunes" => (byte)DayOfWeek.Monday,
-                "martes" => (byte)DayOfWeek.Tuesday,
-                "miercoles" or "miércoles" => (byte)DayOfWeek.Wednesday,
-                "jueves" => (byte)DayOfWeek.Thursday,
-                "viernes" => (byte)DayOfWeek.Friday,
-                "sabado" or "sábado" => (byte)DayOfWeek.Saturday,
-                _ => throw new ValidationException(ErrorCodes.INVALID_DAY_ERROR, nameof(ErrorCodes.INVALID_DAY_ERROR))
-            };
+                var num_Dia = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
 
-            var currentAvailabilities = await _persistence.GetFiltered<Availability>(
+                var disponibilidadActual = await _persistence.GetFiltered<Availability>(
                 a => a.Doctor_Id == request.DoctorId &&
                      a.Month == currentMonth &&
                      a.Year == currentYear &&
-                     a.Day_of_the_week == dia
-            );
+                     a.Day_of_the_week == num_Dia
+                );
 
-            if (currentAvailabilities.Count() != 0 && !(currentAvailabilities is null)) //si se está intentando crear una disponibilidad en un dia donde un doctor ya tiene horario
-            {
-                foreach (var newDayRequest in request.Days)
+                if (disponibilidadActual.Count() != 0 && !(disponibilidadActual is null)) //si se está intentando crear una disponibilidad en un dia donde un doctor ya tiene horario
                 {
+                    var existingList = disponibilidadActual?.ToList() ?? new List<Availability>();
+                    var mismoDiaExistenteDisponilidades = existingList.Where(a => a.Day_of_the_week == num_Dia);
 
-                    var numerin = MapStringToDayOfWeekNumber(newDayRequest.day_of_the_week);
-                    var existingList = currentAvailabilities?.ToList() ?? new List<Availability>();
-                    var mismoDiaExistenteDisponilidades = existingList
-                        .Where(a => a.Day_of_the_week==numerin);
+                        foreach (var existente in mismoDiaExistenteDisponilidades)
+                        {
+                            bool taSolapado = dayRequest.start_time < existente.End_time &&
+                                              dayRequest.end_time > existente.Start_time;
 
-                    foreach (var existente in mismoDiaExistenteDisponilidades)
-                    {
-                        bool taSolapado = newDayRequest.start_time < existente.End_time &&
-                                          newDayRequest.end_time > existente.Start_time;
-
-                        if (taSolapado) throw new ConflictException(ErrorCodes.SOLAPAMIENTO_CONFLICT, nameof(ErrorCodes.SOLAPAMIENTO_CONFLICT)); //no se como hacerle los details a este
-                    }
+                            if (taSolapado) throw new ConflictException(ErrorCodes.SOLAPAMIENTO_CONFLICT, nameof(ErrorCodes.SOLAPAMIENTO_CONFLICT)); //no se como hacerle los details a este
+                        }
                 }
             }
 
-            foreach (var newDayRequest in request.Days) //si llega aqui es que no hay ningun conflicto de solapamiento
+            //si llega aqui es que no hay ningun conflicto de solapamiento
+            foreach (var dayRequest in request.Days)
             {
-                var numerin = MapStringToDayOfWeekNumber(newDayRequest.day_of_the_week);
-
-                var newAvailability = new Availability
-                (request.DoctorId, currentMonth, currentYear, numerin, newDayRequest.start_time, newDayRequest.end_time);
+                var num_Dia = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
+                var newAvailability = new Availability(request.DoctorId, currentMonth, currentYear, num_Dia, dayRequest.start_time, dayRequest.end_time);
                 /*uwu*/
-                await _persistence.Add(newAvailability);
 
+                await _persistence.Add(newAvailability);
                 await GenerateAndSaveSlotsAsync(newAvailability, currentDate);
-            }
+            }    
         }
 
         private async Task GenerateAndSaveSlotsAsync(Availability rule, DateTime currentDate)
@@ -135,7 +122,7 @@ namespace Dsw2026Tpi.Application.Services
                     continue;
                 }
 
-                if ((int)dateToProcess.DayOfWeek == rule.Day_of_the_week)
+                if ((byte)dateToProcess.DayOfWeek == rule.Day_of_the_week)
                 {
                     var slotStart = rule.Start_time;
 
@@ -147,6 +134,8 @@ namespace Dsw2026Tpi.Application.Services
 
                         await _persistence.Add(newSlot);
                         slotStart = slotEnd;
+
+                        if (slotStart <= rule.Start_time) break; // evita un bucle infinito en casos como 23:30 - 00:00
                     }
                 }
             }
@@ -154,7 +143,7 @@ namespace Dsw2026Tpi.Application.Services
 
         private async Task<List<HolidayModel>> GetHolidaysAsync() 
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "feriado.json");
+            var filePath = Path.Combine(AppContext.BaseDirectory, "Sources\\feriados.json");
 
             if (!File.Exists(filePath)) 
             { 
