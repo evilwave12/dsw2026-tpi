@@ -57,7 +57,10 @@ public class AppointmentController : AppController
     [HttpGet("/search")]
     //[Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetBySearch([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] Guid? specialityId, [FromQuery] Guid? doctorId,
+    public async Task<IActionResult> GetBySearch([FromQuery] int pageSize, 
+                                                 [FromQuery] int pageIndex, 
+                                                 [FromQuery] Guid? specialityId, 
+                                                 [FromQuery] Guid? doctorId,
                                                  [FromQuery] string? dni,
                                                  [FromQuery] DateOnly? date)
     {
