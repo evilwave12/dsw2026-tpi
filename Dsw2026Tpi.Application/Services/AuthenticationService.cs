@@ -46,18 +46,21 @@ public class AuthenticationService : IAuthenticationService
                 
         if (!result)
         {
-            _logger.LogError("Intento de login fallido para: {Email}", request.Email);
+            _logger.LogError($"Intento de login fallido para: {request.Email}");
             throw new AuthenticationException();
         }
 
         var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
         var token  = _jwtService.GenerateToken(user.UserName!, role);
+        
+        _logger.LogInformation($"Admin logueado: {request.Email}");
 
         return new LoginAdminModel.Response(
             token,
             role
         );
+
     }
 
     public async Task<LoginPatientModel.Response> LoginPatient(LoginPatientModel.Request request)

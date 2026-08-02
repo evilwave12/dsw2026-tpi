@@ -4,6 +4,7 @@ using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -14,10 +15,12 @@ namespace Dsw2026Tpi.Application.Services
     public class SpecialtyService : ISpecialtyService
     {
         private readonly IPersistence _persistence;
+        private readonly ILogger<SpecialtyService> _logger;
 
-        public SpecialtyService(IPersistence persistence)
+        public SpecialtyService(IPersistence persistence, ILogger<SpecialtyService> logger)
         {
             _persistence = persistence;
+            _logger = logger;
         }
 
         public async Task<Pagination<SpecialtyModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null) //finikited
@@ -47,6 +50,8 @@ namespace Dsw2026Tpi.Application.Services
 
             if (specialty.Description.Length > 101 || specialty.Description.Length < 11) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
 
+            _logger.LogInformation($"Especialidad {specialty.Name} creada exitosamente con descripción {specialty.Description}");
+
             return await _persistence.Add(new Specialty(specialty.Name, specialty.Description));
             
         }
@@ -63,6 +68,8 @@ namespace Dsw2026Tpi.Application.Services
             specialty.Deactivate();
 
             await _persistence.Update(specialty);
+
+            _logger.LogInformation($"Especialidad {specialty.Name} eliminada exitosamente");
         }
 
         public async Task <Specialty> Update (Guid id, SpecialtyModel.Request specialty) //finikited
