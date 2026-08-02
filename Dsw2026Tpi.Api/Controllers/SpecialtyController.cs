@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
-[Route("api/specialities")]
-public class SpecialityController : AppController
+[Route("api/specialties")]
+public class SpecialtyController : AppController
 {
-    private readonly ISpecialityService _service;
-    public SpecialityController(ISpecialityService service)
+    private readonly ISpecialtyService _service;
+    public SpecialtyController(ISpecialtyService service)
     {
         _service = service;
     }
@@ -20,24 +20,24 @@ public class SpecialityController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string? name = null)
     {
-        var specialities = await _service.GetAll(pageSize, pageIndex, name);
-        return Ok(specialities);
+        var specialties = await _service.GetAll(pageSize, pageIndex, name);
+        return Ok(specialties);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task <IActionResult> Add([FromBody] SpecialityModel.Request speciality)
+    public async Task <IActionResult> Add([FromBody] SpecialtyModel.Request specialty)
     {
-        var specialities = await _service.Add(speciality);
-        return Ok(specialities);
+        var specialties = await _service.Add(specialty);
+        return Ok(specialties);
     }
 
     [HttpPut("{id}")]
 
-    public async Task <IActionResult> Update([FromRoute] Guid id, [FromBody] SpecialityModel.Request speciality)
+    public async Task <IActionResult> Update([FromRoute] Guid id, [FromBody] SpecialtyModel.Request specialty)
     {
-        var specialities = await _service.Update(id, speciality);
-        return Ok(specialities);
+        var specialties = await _service.Update(id, specialty);
+        return Ok(specialties);
     }
 
     [HttpDelete("{id}")]

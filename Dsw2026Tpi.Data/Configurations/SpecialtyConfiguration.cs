@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Dsw2026Tpi.Data.Configurations;
 
-public class SpecialityConfiguration : IEntityTypeConfiguration<Speciality>
+public class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
 {
-    public void Configure(EntityTypeBuilder<Speciality> builder)
+    public void Configure(EntityTypeBuilder<Specialty> builder)
     {
-        builder.ToTable("Specialities");
+        builder.ToTable("Specialties");
     }
 }

@@ -10,8 +10,8 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
     {
         builder.ToTable("Doctors");
 
-        builder.HasOne(d => d.Speciality)
+        builder.HasOne(d => d.Specialty)
         .WithMany()
-        .HasForeignKey(d => d.SpecialityId);
+        .HasForeignKey(d => d.SpecialtyId);
     }
 }

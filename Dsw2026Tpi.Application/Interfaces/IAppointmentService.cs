@@ -13,7 +13,7 @@ namespace Dsw2026Tpi.Application.Interfaces
         Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni);
         Task CancelAppointment(Guid id);
         Task<List<AppointmentModel.Response>> GetByDate(DateOnly date);
-        Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialityId = null, Guid? doctorId = null, string? dni = null, DateOnly? date = null);
+        Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialtyId = null, Guid? doctorId = null, string? dni = null, DateOnly? date = null);
 
     }
 }

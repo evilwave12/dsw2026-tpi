@@ -110,13 +110,12 @@ namespace Dsw2026Tpi.Application.Services
             return turnosdia;
         }
 
-        public async Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialityId = null, Guid? doctorId = null, string? dni = null, DateOnly? date = null)
+        public async Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialtyId = null, Guid? doctorId = null, string? dni = null, DateOnly? date = null)
         {
-
             var citas = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
                         a =>
                             (!doctorId.HasValue || a.Slot.Availability.Doctor_Id == doctorId) &&
-                            (!specialityId.HasValue || a.Slot.Availability.Doctor.Speciality.Id == specialityId) &&
+                            (!specialtyId.HasValue || a.Slot.Availability.Doctor.Specialty.Id == specialtyId) &&
                             (string.IsNullOrWhiteSpace(dni) || a.Patient.Dni == dni) &&
                             (!date.HasValue || a.Slot.Slot_date == date),
 
@@ -126,14 +125,13 @@ namespace Dsw2026Tpi.Application.Services
                         nameof(Appointment.Slot),
                         $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}",
                         $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}.{nameof(Availability.Doctor)}",
-                        $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}.{nameof(Availability.Doctor)}.{nameof(Doctor.Speciality)}"
+                        $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}.{nameof(Availability.Doctor)}.{nameof(Doctor.Specialty)}"
                         );
 
-            
             return citas.Map(c => new AppointmentModel.ResponseGetBySearch(c.Id, c.Status, 
-                                  new AppointmentModel.PatientResponse(c.Patient.Dni,c.Patient.Name),
-                                  new AppointmentModel.DoctorResponse(c.Slot.Availability.Doctor.Id, c.Slot.Availability.Doctor.Name, 
-                                    new AppointmentModel.SpecialityResponse(c.Slot.Availability.Doctor.Speciality.Id, c.Slot.Availability.Doctor.Speciality.Name))));
+                                    new AppointmentModel.PatientResponse(c.Patient.Dni,c.Patient.Name),
+                                    new AppointmentModel.DoctorResponse(c.Slot.Availability.Doctor.Id, c.Slot.Availability.Doctor.Name, 
+                                        new AppointmentModel.SpecialtyResponse(c.Slot.Availability.Doctor.Specialty.Id, c.Slot.Availability.Doctor.Specialty.Name))));
 
         }  
 

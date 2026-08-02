@@ -18,7 +18,7 @@ public class PersistenceEf : IPersistence
 
     public void InitializeData()
     {
-        _context.Seedwork<Speciality>("Sources\\specialities.json");
+        _context.Seedwork<Specialty>("Sources\\specialties.json");
         _context.Seedwork<Doctor>("Sources\\doctors.json");
         _context.Seedwork<Availability>("Sources\\availabilities.json");
         _context.Seedwork<Patient>("Sources\\patients.json");

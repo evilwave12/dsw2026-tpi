@@ -9,11 +9,11 @@ public record AppointmentModel
 
 
     //admin endpoint 2
-    public record PatientResponse(string dni, string name);
+    public record PatientResponse(string dni, string fullName);
     
-    public record SpecialityResponse(Guid specialityId, string specialityName);
+    public record SpecialtyResponse(Guid specialtyId, string specialtyName);
 
-    public record DoctorResponse(Guid idDoctor, string doctorName, SpecialityResponse speciality);
+    public record DoctorResponse(Guid doctorId, string name, SpecialtyResponse specialty);
     public record ResponseGetBySearch(Guid appointmentsId, AppointmentStatus appointmentsStatus, 
                                         PatientResponse patient,
                                         DoctorResponse doctor);     
