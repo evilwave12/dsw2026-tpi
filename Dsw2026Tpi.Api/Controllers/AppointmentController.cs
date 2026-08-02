@@ -42,7 +42,7 @@ public class AppointmentController : AppController
     public async Task<IActionResult> CancelAppointment(Guid id) 
     {
         await _service.CancelAppointment(id);
-        return Ok("Cita cancelada correctamente");
+        return Ok("ok");
     }
 
     [HttpGet]

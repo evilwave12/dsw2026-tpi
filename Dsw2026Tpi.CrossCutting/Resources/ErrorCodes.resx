@@ -156,6 +156,9 @@
   <data name="INVALID_REASON_ERROR" xml:space="preserve">
     <value>La razón debe contener más de 5 caracteres</value>
   </data>
+  <data name="INVALID_SPECIALITY_ERROR" xml:space="preserve">
+    <value>La especialidad ingresada está eliminada</value>
+  </data>
   <data name="INVALID_TIME_CONFLICT" xml:space="preserve">
     <value>El tiempo de inicio debe ser anterior al tiempo de finalización</value>
   </data>
