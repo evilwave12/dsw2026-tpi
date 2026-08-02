@@ -110,9 +110,7 @@ namespace Dsw2026Tpi.Application.Services
             return turnosdia;
         }
 
-        public async Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialityId = null, Guid? doctorId = null,
-                                                                                       string? dni = null,
-                                                                                       DateOnly? date = null)
+        public async Task<Pagination<AppointmentModel.ResponseGetBySearch>> GetBySearch(int pageSize, int pageIndex, Guid? specialityId = null, Guid? doctorId = null, string? dni = null, DateOnly? date = null)
         {
 
             var citas = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
@@ -131,8 +129,11 @@ namespace Dsw2026Tpi.Application.Services
                         $"{nameof(Appointment.Slot)}.{nameof(AvailabilitySlot.Availability)}.{nameof(Availability.Doctor)}.{nameof(Doctor.Speciality)}"
                         );
 
-
-            return citas.Map(c => new AppointmentModel.ResponseGetBySearch(c.Slot.Availability.Doctor.Speciality.Name, c.Slot.Availability.Doctor.Name, c.Slot.Slot_date, c.Slot.Start_time, c.Slot.End_time));
+            
+            return citas.Map(c => new AppointmentModel.ResponseGetBySearch(c.Id, c.Status, 
+                                  new AppointmentModel.PatientResponse(c.Patient.Dni,c.Patient.Name),
+                                  new AppointmentModel.DoctorResponse(c.Slot.Availability.Doctor.Id, c.Slot.Availability.Doctor.Name, 
+                                    new AppointmentModel.SpecialityResponse(c.Slot.Availability.Doctor.Speciality.Id, c.Slot.Availability.Doctor.Speciality.Name))));
 
         }  
 

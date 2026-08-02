@@ -6,5 +6,15 @@ public record AppointmentModel
 {
     public record Request(Guid Id_doctor, Guid Id_Slot, string dni, string reason);
     public record Response(Guid Id_Doctor,string Doctor_Name, string Dni_Pac, string Nombre_Pac,TimeOnly StartTime, TimeOnly EndTime); //admin endpoint 1
-    public record ResponseGetBySearch(string specialityName, string doctorName,DateOnly fecha, TimeOnly inicio, TimeOnly fin); //admin endpoint 2
+
+
+    //admin endpoint 2
+    public record PatientResponse(string dni, string name);
+    
+    public record SpecialityResponse(Guid specialityId, string specialityName);
+
+    public record DoctorResponse(Guid idDoctor, string doctorName, SpecialityResponse speciality);
+    public record ResponseGetBySearch(Guid appointmentsId, AppointmentStatus appointmentsStatus, 
+                                        PatientResponse patient,
+                                        DoctorResponse doctor);     
 }
