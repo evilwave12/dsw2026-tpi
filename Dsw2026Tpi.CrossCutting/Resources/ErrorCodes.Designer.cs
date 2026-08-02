@@ -180,9 +180,9 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         /// <summary>
         ///   Busca una cadena traducida similar a La especialidad ingresada está eliminada.
         /// </summary>
-        public static string INVALID_SPECIALITY_ERROR {
+        public static string INVALID_SPECIALTY_ERROR {
             get {
-                return ResourceManager.GetString("INVALID_SPECIALITY_ERROR", resourceCulture);
+                return ResourceManager.GetString("INVALID_SPECIALTY_ERROR", resourceCulture);
             }
         }
         
@@ -261,18 +261,18 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         /// <summary>
         ///   Busca una cadena traducida similar a La especialidad ya existe.
         /// </summary>
-        public static string SPECIALITY_EXISTS {
+        public static string SPECIALTY_EXISTS {
             get {
-                return ResourceManager.GetString("SPECIALITY_EXISTS", resourceCulture);
+                return ResourceManager.GetString("SPECIALTY_EXISTS", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Busca una cadena traducida similar a La especialidad ya está eliminada.
         /// </summary>
-        public static string SPECIALITY_INACTIVE {
+        public static string SPECIALTY_INACTIVE {
             get {
-                return ResourceManager.GetString("SPECIALITY_INACTIVE", resourceCulture);
+                return ResourceManager.GetString("SPECIALTY_INACTIVE", resourceCulture);
             }
         }
         

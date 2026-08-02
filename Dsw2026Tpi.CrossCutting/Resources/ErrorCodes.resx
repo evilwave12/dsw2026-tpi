@@ -156,7 +156,7 @@
   <data name="INVALID_REASON_ERROR" xml:space="preserve">
     <value>La razón debe contener más de 5 caracteres</value>
   </data>
-  <data name="INVALID_SPECIALITY_ERROR" xml:space="preserve">
+  <data name="INVALID_SPECIALTY_ERROR" xml:space="preserve">
     <value>La especialidad ingresada está eliminada</value>
   </data>
   <data name="INVALID_TIME_CONFLICT" xml:space="preserve">
@@ -183,10 +183,10 @@
   <data name="SOLAPAMIENTO_CONFLICT" xml:space="preserve">
     <value>Las disponibilidades no pueden solaparse</value>
   </data>
-  <data name="SPECIALITY_EXISTS" xml:space="preserve">
+  <data name="SPECIALTY_EXISTS" xml:space="preserve">
     <value>La especialidad ya existe</value>
   </data>
-  <data name="SPECIALITY_INACTIVE" xml:space="preserve">
+  <data name="SPECIALTY_INACTIVE" xml:space="preserve">
     <value>La especialidad ya está eliminada</value>
   </data>
   <data name="START_TIME_ERROR" xml:space="preserve">

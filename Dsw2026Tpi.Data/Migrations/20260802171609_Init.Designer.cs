@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dsw2026Tpi.Data.Migrations
 {
     [DbContext(typeof(Dsw2026TpiDbContext))]
-    [Migration("20260724165553_availab")]
-    partial class availab
+    [Migration("20260802171609_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,46 @@ namespace Dsw2026Tpi.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Appointment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("Attended_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Cancelled_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Patient_Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Slot_Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Patient_Id");
+
+                    b.HasIndex("Slot_Id");
+
+                    b.ToTable("Appointments", (string)null);
+                });
 
             modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Availability", b =>
                 {
@@ -56,6 +96,8 @@ namespace Dsw2026Tpi.Data.Migrations
                         .HasColumnType("smallint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Doctor_Id");
 
                     b.ToTable("Availabilities", (string)null);
                 });
@@ -92,6 +134,8 @@ namespace Dsw2026Tpi.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AvailabilityId");
+
                     b.ToTable("AvailabilitySlots", (string)null);
                 });
 
@@ -115,7 +159,7 @@ namespace Dsw2026Tpi.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SpecialityId")
+                    b.Property<Guid?>("SpecialtyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -123,12 +167,44 @@ namespace Dsw2026Tpi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SpecialityId");
+                    b.HasIndex("SpecialtyId");
 
                     b.ToTable("Doctors", (string)null);
                 });
 
-            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Speciality", b =>
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Patient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Dni")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Patients", (string)null);
+                });
+
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Specialty", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -153,16 +229,57 @@ namespace Dsw2026Tpi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialities", (string)null);
+                    b.ToTable("Specialties", (string)null);
+                });
+
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Appointment", b =>
+                {
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("Patient_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.AvailabilitySlot", "Slot")
+                        .WithMany()
+                        .HasForeignKey("Slot_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Slot");
+                });
+
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Availability", b =>
+                {
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("Doctor_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.AvailabilitySlot", b =>
+                {
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.Availability", "Availability")
+                        .WithMany()
+                        .HasForeignKey("AvailabilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Availability");
                 });
 
             modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Doctor", b =>
                 {
-                    b.HasOne("Dsw2026Tpi.Domain.Entities.Speciality", "Speciality")
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.Specialty", "Specialty")
                         .WithMany()
-                        .HasForeignKey("SpecialityId");
+                        .HasForeignKey("SpecialtyId");
 
-                    b.Navigation("Speciality");
+                    b.Navigation("Specialty");
                 });
 #pragma warning restore 612, 618
         }

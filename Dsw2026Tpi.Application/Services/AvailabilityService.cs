@@ -126,16 +126,15 @@ namespace Dsw2026Tpi.Application.Services
                 {
                     var slotStart = rule.Start_time;
 
-                    while (slotStart.AddMinutes(30) <= rule.End_time)
+                    while (slotStart.AddMinutes(30) <= rule.End_time && !slotStart.Equals(rule.End_time)) //la ultima validacion es para evitar un bucle infinito en casos como 23:30 - 00:00
                     {
                         var slotEnd = slotStart.AddMinutes(30);
 
                         var newSlot = new AvailabilitySlot(rule.Id, dateToProcess, slotStart, slotEnd);
 
-                        await _persistence.Add(newSlot);
-                        slotStart = slotEnd;
+                        await _persistence.Add(newSlot);   
 
-                        if (slotStart <= rule.Start_time) break; // evita un bucle infinito en casos como 23:30 - 00:00
+                        slotStart = slotEnd;
                     }
                 }
             }
