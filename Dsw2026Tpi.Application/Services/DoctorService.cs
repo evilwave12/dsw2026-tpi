@@ -4,6 +4,7 @@ using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using System.Numerics;
 
 namespace Dsw2026Tpi.Application.Services;
@@ -11,10 +12,12 @@ namespace Dsw2026Tpi.Application.Services;
 public class DoctorService : IDoctorService
 {
     private readonly IPersistence _persistence;
+    private readonly ILogger<DoctorService> _logger;
 
-    public DoctorService(IPersistence persistence)
+    public DoctorService(IPersistence persistence, ILogger<DoctorService> logger)
     {
         _persistence = persistence;
+        _logger = logger;
     }
 
     public async Task<Pagination<DoctorModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null) //finikited
@@ -59,6 +62,8 @@ public class DoctorService : IDoctorService
 
         var newDoctor = await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, doctor.SpecialtyId));
 
+        _logger.LogInformation($"Doctor {newDoctor.Name} creado exitosamente con matrícula {newDoctor.LicenseNumber} y especialidad {specialty.Name}");
+
         return new DoctorModel.Response(newDoctor.Id, newDoctor.Name, newDoctor.LicenseNumber, new DoctorModel.SpecialtyDto(specialty.Id, specialty.Name, specialty.Description));
     }
 
@@ -96,5 +101,9 @@ public class DoctorService : IDoctorService
         if(!doctor.IsActive) throw new ValidationException(ErrorCodes.DOCTOR_INACTIVE, nameof(ErrorCodes.DOCTOR_INACTIVE));
 
         doctor.Deactivate();
+
+        await _persistence.Update(doctor);
+
+        _logger.LogInformation($"Doctor {doctor.Name} con matrícula {doctor.LicenseNumber} ha sido borrado exitosamente.");
     }
 }

@@ -4,6 +4,7 @@ using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace Dsw2026Tpi.Application.Services
     public class AvailabilityService : IAvailabilityService
     {
         private readonly IPersistence _persistence;
+        private readonly ILogger<AvailabilityService> _logger;
 
-        public AvailabilityService(IPersistence persistence)
+        public AvailabilityService(IPersistence persistence, ILogger<AvailabilityService> logger)
         {
             _persistence = persistence;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request)
@@ -59,6 +62,9 @@ namespace Dsw2026Tpi.Application.Services
                 availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
             }
             await ValidationAvailabilitiesAsync(request);
+
+            _logger.LogInformation($"Disponibilidades creadas exitosamente para el médico {doctor.Name}, id: {doctor.Id}");
+
             return availabilities;
         }
 

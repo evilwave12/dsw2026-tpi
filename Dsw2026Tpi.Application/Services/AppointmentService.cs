@@ -6,6 +6,7 @@ using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,10 +16,12 @@ namespace Dsw2026Tpi.Application.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IPersistence _persistence;
+        private readonly ILogger<AppointmentService> _logger;
 
-        public AppointmentService(IPersistence persistence)
+        public AppointmentService(IPersistence persistence, ILogger<AppointmentService> logger)
         {
             _persistence = persistence;
+            _logger = logger;
         }
         public async Task<AppointmentModel.Response> Add(AppointmentModel.Request cita) //post
         {
@@ -30,8 +33,14 @@ namespace Dsw2026Tpi.Application.Services
 
             var paciente = await _persistence.First<Patient>(p => p.Dni == cita.dni && p.Deleted == false) ?? throw new EntityNotFoundException(nameof(Patient));
 
-            if (slot.Status != AvailabilitySlotStatus.Available) throw new ConflictException(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT, nameof(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT)).WithDetail("Slot_Status", "Slot_Not_Available");
+            if (slot.Status != AvailabilitySlotStatus.Available)
+            {
+                _logger.LogError($"Error en la reserva. Slot {cita.Id_Slot} ya ocupado");
 
+                throw new ConflictException(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT, nameof(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT)).WithDetail("Slot_Status", "Slot_Not_Available");
+
+            }
+          
             if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException(ErrorCodes.PAST_DATE_CONFLICT, nameof(ErrorCodes.PAST_DATE_CONFLICT)).WithDetail("Slot_Date", "Slot_In_Past_Date");
             
             if (cita.reason.Length < 5) throw new ValidationException(ErrorCodes.INVALID_REASON_ERROR, nameof(ErrorCodes.INVALID_REASON_ERROR)); //Motivo inválido
@@ -40,6 +49,8 @@ namespace Dsw2026Tpi.Application.Services
 
             await _persistence.Update(slot);
             await _persistence.Add(new Appointment(cita.reason, slot.Id, paciente.Id));
+
+            _logger.LogInformation($"Turno reservado para el paciente: {paciente.Dni}, con el médico {doctor.Name} en el día {slot.Slot_date} y hora {slot.Start_time} - {slot.End_time}");
 
             return new AppointmentModel.Response(doctor.Id, doctor.Name, paciente.Dni, paciente.Name, slot.Start_time, slot.End_time);
         }
@@ -83,8 +94,9 @@ namespace Dsw2026Tpi.Application.Services
             {
                 slot.Status = AvailabilitySlotStatus.Available;
                 await _persistence.Update(slot);
+                _logger.LogInformation($"Turno cancelado para el paciente: {appointment.Patient.Dni}, con el médico {appointment.Slot.Availability.Doctor.Name} en el día {slot.Slot_date} y hora {slot.Start_time} - {slot.End_time}");
             }
-          
+
         }
 
         public async Task<List<AppointmentModel.Response>> GetByDate(DateOnly date)
