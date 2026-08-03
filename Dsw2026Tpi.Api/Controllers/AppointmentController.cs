@@ -21,6 +21,7 @@ public class AppointmentController : AppController
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
+
     public async Task<IActionResult> Add([FromBody] AppointmentModel.Request appointment)
     {
         var appointment2 = await _service.Add(appointment);

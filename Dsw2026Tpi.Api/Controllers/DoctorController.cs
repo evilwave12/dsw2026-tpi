@@ -35,6 +35,7 @@ public class DoctorController : AppController
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Add([FromBody] DoctorModel.Request doctor)
     {
         var doctor2 = await _service.Add(doctor);
