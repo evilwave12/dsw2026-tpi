@@ -92,10 +92,12 @@ public class AuthenticationService : IAuthenticationService
             _ = await _userManager.AddToRoleAsync(user, Roles.Patient);
 
             var patient = new Patient(
-                name: "",                //?
-                phonenumber: "",         //?
-                dni: patientDniString
+                full_name:"",         
+                //phonenumber: "",
+                dni: patientDniString,
+                userId: Guid.Parse(user.Id)
                 );
+
             await _context.Patients.AddAsync(patient);
             await _context.SaveChangesAsync();
 
