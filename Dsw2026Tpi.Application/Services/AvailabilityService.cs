@@ -32,17 +32,19 @@ namespace Dsw2026Tpi.Application.Services
 
             //cargar los slots desde las disponibilidades existentes por el json
             var disponibilidades = await _persistence.GetAll<Availability>();
-            foreach (var dispo in disponibilidades)
+            if(disponibilidades is not null)
             {
-                await GenerateAndSaveSlotsAsync(dispo,DateTime.Now);
+                foreach (var dispo in disponibilidades)
+                {
+                    await GenerateAndSaveSlotsAsync(dispo, DateTime.Now);
+                }
             }
-            //
+            ////////////////////////////////////////////////
 
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
 
             if (doctor == null || !doctor.IsActive) throw new EntityNotFoundException(nameof(Doctor));
             
-
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
             var currentYear = (short)currentDate.Year;
@@ -51,7 +53,6 @@ namespace Dsw2026Tpi.Application.Services
 
             foreach (var dayRequest in request.Days)
             {
-
                 if (dayRequest.start_time >= dayRequest.end_time) throw new ConflictException(ErrorCodes.INVALID_TIME_CONFLICT, nameof(ErrorCodes.INVALID_TIME_CONFLICT)).WithDetail("startTime", "start_time_after_end_time");
                 
                 var dayOfWeekNumber = MapStringToDayOfWeekNumber(dayRequest.day_of_the_week);
@@ -59,6 +60,7 @@ namespace Dsw2026Tpi.Application.Services
                 var availability = new Availability(request.DoctorId, currentMonth, currentYear, dayOfWeekNumber, dayRequest.start_time, dayRequest.end_time);
 
                 var DIA = ((DiaSemana)dayOfWeekNumber).ToString(); //formateao pa la salida
+
                 availabilities.Add(new AvailabilityModel.Response(DIA, $"{availability.Start_time:HH:mm}", $"{availability.End_time:HH:mm}"));
             }
             await ValidationAvailabilitiesAsync(request);
@@ -115,7 +117,7 @@ namespace Dsw2026Tpi.Application.Services
 
         private async Task GenerateAndSaveSlotsAsync(Availability rule, DateTime currentDate)
         {
-            var feriados = await GetHolidaysAsync();
+            var feriados = await GetFeriadosAsync();
             var feriadosDates = feriados.Select(f => f.Date);
 
             int daysInMonth = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
@@ -146,7 +148,7 @@ namespace Dsw2026Tpi.Application.Services
             }
         }
 
-        private async Task<List<HolidayModel>> GetHolidaysAsync() 
+        private async Task<List<HolidayModel>> GetFeriadosAsync() 
         {
             var filePath = Path.Combine(AppContext.BaseDirectory, "Sources\\feriados.json");
 
@@ -188,18 +190,24 @@ namespace Dsw2026Tpi.Application.Services
             
             var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == request.DoctorId) ?? throw new EntityNotFoundException(nameof(Availability));
 
+            bool bandera = false;
+
             foreach (var dispo in disponibilidades)
             {
                 var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.AvailabilityId == dispo.Id);
 
                 foreach (var slot in slots)
                 {
-                    await _persistence.Delete(slot);
+                    if (slot.Status != AvailabilitySlotStatus.Booked)
+                    {
+                        await _persistence.Delete(slot);
+                    }
+                    else { bandera = true; }
                 }
-                await _persistence.Delete(dispo);
-            }
 
-            //
+                if(!bandera) await _persistence.Delete(dispo); //borra la disponibilidad solo si no tiene algun slot reservado
+
+            }
 
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
