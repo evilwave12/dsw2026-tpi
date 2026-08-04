@@ -1,4 +1,5 @@
-﻿using Dsw2026Tpi.Data;
+﻿using Dsw2026Tpi.Api.Services;
+using Dsw2026Tpi.Data;
 using Dsw2026Tpi.Data.Extensions;
 using Dsw2026Tpi.Data.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -26,10 +27,15 @@ public static class PersistenceConfigurationExtensions
             options.UseSeeding((c, t) =>
             {
                 c.Seedwork<IdentityRole>("Sources\\roles.json");
-                //c.Seedwork<ApplicationUser>("Sources\\users.json");
             });
         });
 
+        return services;
+    }
+
+    public static IServiceCollection AddInitialPatients(this IServiceCollection services)
+    {
+        services.AddHostedService<PatientSeeder>();
         return services;
     }
 }
