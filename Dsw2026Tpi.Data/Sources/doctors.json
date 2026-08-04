@@ -40,5 +40,83 @@
     "name": "Robert Chen",
     "licenseNumber": "MED-5588",
     "specialtyId": "44444444-4444-4444-4444-444444444444"
+  },
+  {
+    "id": "a8888888-8888-8888-8888-888888888888",
+    "name": "Sofía Herrera",
+    "licenseNumber": "MED-7412",
+    "specialtyId": "33333333-3333-3333-3333-333333333333"
+  },
+  {
+    "id": "a9999999-9999-9999-9999-999999999999",
+    "name": "Diego Navarro",
+    "licenseNumber": "MED-2298",
+    "specialtyId": "66666666-6666-6666-6666-666666666666"
+  },
+  {
+    "id": "b1111111-1111-1111-1111-111111111111",
+    "name": "Camila Ortiz",
+    "licenseNumber": "MED-9105",
+    "specialtyId": "77777777-7777-7777-7777-777777777777"
+  },
+  {
+    "id": "b2222222-2222-2222-2222-222222222222",
+    "name": "Andrés Molina",
+    "licenseNumber": "MED-3367",
+    "specialtyId": "88888888-8888-8888-8888-888888888888"
+  },
+  {
+    "id": "b3333333-3333-3333-3333-333333333333",
+    "name": "Valeria Castro",
+    "licenseNumber": "MED-5820",
+    "specialtyId": "11111111-1111-1111-1111-111111111111"
+  },
+  {
+    "id": "b4444444-4444-4444-4444-444444444444",
+    "name": "Emily Johnson",
+    "licenseNumber": "MED-6043",
+    "specialtyId": "44444444-4444-4444-4444-444444444444"
+  },
+  {
+    "id": "b5555555-5555-5555-5555-555555555555",
+    "name": "Tomás Vega",
+    "licenseNumber": "MED-1574",
+    "specialtyId": "22222222-2222-2222-2222-222222222222"
+  },
+  {
+    "id": "b6666666-6666-6666-6666-666666666666",
+    "name": "Isabella Romano",
+    "licenseNumber": "MED-8899",
+    "specialtyId": "55555555-5555-5555-5555-555555555555"
+  },
+  {
+    "id": "b7777777-7777-7777-7777-777777777777",
+    "name": "Michael Brown",
+    "licenseNumber": "MED-4461",
+    "specialtyId": "99999999-9999-9999-9999-999999999999"
+  },
+  {
+    "id": "b8888888-8888-8888-8888-888888888888",
+    "name": "Florencia Aguirre",
+    "licenseNumber": "MED-2735",
+    "specialtyId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+  },
+  {
+    "id": "b9999999-9999-9999-9999-999999999999",
+    "name": "Gonzalo Peña",
+    "licenseNumber": "MED-9950",
+    "specialtyId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+  },
+  {
+    "id": "c1111111-1111-1111-1111-111111111111",
+    "name": "Renata Silva",
+    "licenseNumber": "MED-3186",
+    "specialtyId": "cccccccc-cccc-cccc-cccc-cccccccccccc"
+  },
+  {
+    "id": "c2222222-2222-2222-2222-222222222222",
+    "name": "Daniel Ríos",
+    "licenseNumber": "MED-7027",
+    "specialtyId": "33333333-3333-3333-3333-333333333333"
   }
 ]

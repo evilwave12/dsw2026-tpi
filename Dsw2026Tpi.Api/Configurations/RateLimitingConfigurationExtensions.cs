@@ -28,7 +28,6 @@ public static class RateLimitingConfigurationExtensions
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-            // Política general: se aplica a TODOS los endpoints (por usuario si está autenticado, si no por IP)
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
                 RateLimitPartition.GetFixedWindowLimiter(
                     GetUserOrIp(httpContext),
@@ -81,7 +80,7 @@ public static class RateLimitingConfigurationExtensions
                 context.HttpContext.Response.ContentType = "application/json";
 
                 var error = new ErrorResponse(nameof(ErrorCodes.RATE_LIMIT_EXCEEDED), ErrorCodes.RATE_LIMIT_EXCEEDED);
-                var json = JsonSerializer.Serialize(error); // misma llamada que tu ExceptionHandlingMiddleware
+                var json = JsonSerializer.Serialize(error); 
 
                 await context.HttpContext.Response.WriteAsync(json, cancellationToken);
             };
