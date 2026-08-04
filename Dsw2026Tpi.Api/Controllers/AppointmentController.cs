@@ -29,9 +29,9 @@ public class AppointmentController : AppController
     }
 
   
-    [HttpGet("{dni}/patient")]
+    [HttpGet("/patient")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetActiveAppointmentsByPatient([FromRoute] string dni)
+    public async Task<IActionResult> GetPatientAppointments([FromQuery] string dni)
     {
         var appointments = await _service.GetActiveAppointmentsByPatientDni(dni);
         return Ok(appointments);
