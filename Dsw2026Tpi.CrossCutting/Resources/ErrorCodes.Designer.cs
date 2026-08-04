@@ -79,7 +79,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a La descripción debe tener entre 11 y 100 caracteres.
+        ///   Busca una cadena traducida similar a La descripción debe tener entre 10 y 100 caracteres.
         /// </summary>
         public static string DESCRIPTION_ERROR {
             get {
@@ -111,6 +111,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         public static string EMPTY_DESCRIPTION_ERROR {
             get {
                 return ResourceManager.GetString("EMPTY_DESCRIPTION_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El número de licencia no puede ser vacio.
+        /// </summary>
+        public static string EMPTY_LICENSE_ERROR {
+            get {
+                return ResourceManager.GetString("EMPTY_LICENSE_ERROR", resourceCulture);
             }
         }
         
@@ -160,7 +169,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a El DNI no es válido.
+        ///   Busca una cadena traducida similar a Debe ingresar un DNI válido.
         /// </summary>
         public static string INVALID_DNI_ERROR {
             get {
@@ -169,7 +178,34 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a La razón debe contener más de 5 caracteres.
+        ///   Busca una cadena traducida similar a Debe ingresar un mail válido.
+        /// </summary>
+        public static string INVALID_EMAIL_FORMAT {
+            get {
+                return ResourceManager.GetString("INVALID_EMAIL_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La longitud del mail no debe superar los 150 caracteres.
+        /// </summary>
+        public static string INVALID_EMAIL_LENGTH {
+            get {
+                return ResourceManager.GetString("INVALID_EMAIL_LENGTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La matrícula no puede superar los 50 caracteres.
+        /// </summary>
+        public static string INVALID_LICENSE_ERROR {
+            get {
+                return ResourceManager.GetString("INVALID_LICENSE_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La razón debe contener entre 5 y 300 caracteres.
         /// </summary>
         public static string INVALID_REASON_ERROR {
             get {
@@ -192,15 +228,6 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         public static string INVALID_TIME_CONFLICT {
             get {
                 return ResourceManager.GetString("INVALID_TIME_CONFLICT", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a El número de licencia no puede ser vacio.
-        /// </summary>
-        public static string LICENSE_ERROR {
-            get {
-                return ResourceManager.GetString("LICENSE_ERROR", resourceCulture);
             }
         }
         

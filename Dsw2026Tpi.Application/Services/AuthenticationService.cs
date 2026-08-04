@@ -69,8 +69,9 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<LoginPatientModel.Response> LoginPatient(LoginPatientModel.Request request)
     {
-        if(string.IsNullOrWhiteSpace(request.Email) || !request.Email.IsEmailValid()) throw new ValidationException("INVALID_EMAIL_FORMAT", "El formato del mail no es válido"); ;
-        if(request.Dni< 1000000 || request.Dni> 99999999) throw new ValidationException("INVALID_DNI", "El DNI debe tener entre 7 y 8 dígitos"); ;
+        if(string.IsNullOrWhiteSpace(request.Email) || !request.Email.IsEmailValid() || request.Email.Length > 150) throw new ValidationException(nameof(ErrorCodes.INVALID_EMAIL_FORMAT),ErrorCodes.INVALID_EMAIL_FORMAT);
+        if (request.Email.Length > 150) throw new ValidationException(nameof(ErrorCodes.INVALID_EMAIL_LENGTH),ErrorCodes.INVALID_EMAIL_LENGTH);
+        if (request.Dni< 1000000 || request.Dni> 99999999) throw new ValidationException(nameof(ErrorCodes.INVALID_DNI_ERROR), ErrorCodes.INVALID_DNI_ERROR);
 
 
         var patientDniString = request.Dni.ToString();
@@ -80,8 +81,6 @@ public class AuthenticationService : IAuthenticationService
         var user = await _userManager.FindByEmailAsync(request.Email);
         var existingPatient = await _persistence.First<Patient>(p => p.Dni == patientDniString);
         //var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Dni == patientDniString);
-
-
 
         if (user == null && existingPatient == null)
         {

@@ -4,8 +4,9 @@ namespace Dsw2026Tpi.Application.Dtos;
 
 public record AppointmentModel
 {
-    public record Request(Guid Id_doctor, Guid Id_Slot, string dni, string reason);
-    public record Response(Guid Id_Doctor,string Doctor_Name, string Dni_Pac, string Nombre_Pac,TimeOnly StartTime, TimeOnly EndTime); //admin endpoint 1
+    public record PatientDto(string dni);
+    public record Request(Guid doctorId, Guid availabilitySlotId, PatientDto patient, string reason);
+    public record Response(Guid doctorId, string doctorName, string patientDni, string patientName,TimeOnly startTime, TimeOnly endTime); //admin endpoint 1
 
 
     //admin endpoint 2

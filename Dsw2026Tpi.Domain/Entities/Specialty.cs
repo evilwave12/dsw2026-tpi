@@ -19,8 +19,6 @@ public class Specialty: EntityBase
     {
         Name = name;
         Description = description;
-        CreatedAt = DateTime.Now;
-        UpdatedAt = DateTime.Now;
     }
 
     [JsonConstructor]
@@ -28,8 +26,6 @@ public class Specialty: EntityBase
     {
         Name = name;
         Description = description;
-        CreatedAt = DateTime.Now;
-        UpdatedAt = DateTime.Now;
     }
 
     public void Deactivate()

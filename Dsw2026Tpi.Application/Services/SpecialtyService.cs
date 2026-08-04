@@ -36,11 +36,11 @@ namespace Dsw2026Tpi.Application.Services
                 return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description));
         }
 
-        public async Task<Specialty> Add(SpecialtyModel.Request specialty) //finikited
+        public async Task<Specialty> Add(SpecialtyModel.Request specialty)
         {
             if (string.IsNullOrWhiteSpace(specialty.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-            if (specialty.Name.Length > 101 || specialty.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));  
+            if (specialty.Name.Length > 100 || specialty.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));  
             
             var especialidades = await _persistence.First<Specialty>(s => s.Name == specialty.Name);
 
@@ -48,7 +48,7 @@ namespace Dsw2026Tpi.Application.Services
                    
             if (string.IsNullOrWhiteSpace(specialty.Description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
 
-            if (specialty.Description.Length > 101 || specialty.Description.Length < 11) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
+            if (specialty.Description.Length > 100 || specialty.Description.Length < 10) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
 
             _logger.LogInformation($"Especialidad {specialty.Name} creada exitosamente con descripción {specialty.Description}");
 
@@ -56,7 +56,7 @@ namespace Dsw2026Tpi.Application.Services
             
         }
 
-        public async Task Delete(Guid id) //finikited
+        public async Task Delete(Guid id)
         {
             var specialty = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
 
@@ -67,12 +67,15 @@ namespace Dsw2026Tpi.Application.Services
 
             specialty.Deactivate();
 
+            var now = DateTime.Now;
+            specialty.UpdatedAt = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+
             await _persistence.Update(specialty);
 
             _logger.LogInformation($"Especialidad {specialty.Name} eliminada exitosamente");
         }
 
-        public async Task <Specialty> Update (Guid id, SpecialtyModel.Request specialty) //finikited
+        public async Task <Specialty> Update(Guid id, SpecialtyModel.Request specialty)
         {
             var specialty2 = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
 
@@ -86,9 +89,11 @@ namespace Dsw2026Tpi.Application.Services
 
             if (specialty.Description.Length > 101 || specialty.Description.Length < 11) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
 
-
             specialty2.Name = specialty.Name;
             specialty2.Description = specialty.Description;
+
+            var now = DateTime.Now;
+            specialty2.UpdatedAt = new DateTime(now.Year,now.Month,now.Day,now.Hour,now.Minute,now.Second);
 
             return await _persistence.Update(specialty2);
            
