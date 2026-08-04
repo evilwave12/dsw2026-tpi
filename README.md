@@ -2,13 +2,35 @@
 ## Desarrollo de Software 2026
 
 ## INTEGRANTES 
-* Fernández, Guillermo Emanuel 57799  
-* Giuliante, Ian 58268  
-* Velloso Colombres, Nazarena 58340
+| Nombre y Apellido | Legajo |
+|-------------------|--------|
+|Fernández, Guillermo Emanuel     |   57799     |
+| Giuliante, Ian     |    58268    |
+| Velloso Colombres, Nazarena     |    58340    |
 
 ## INSTRUCCIONES DE CONFIGURACIÓN Y EJECUCIÓN DEL PROYECTO
 
+### Requisitos previos
 
+- **Visual Studio 2022** con la carga de trabajo **"Desarrollo de ASP.NET y web"** instalada. 
+- **.NET 10 SDK**.
+- **SQL Server**.
+
+### **Instrucciones**
+1. Clonar los archivos del repositorio:
+```
+	git clone <URL-del-repo>
+
+	cd <carpeta-del-repo>
+```
+2. Abrir la solución (archivo .sln)
+3. Actualizar la base de datos: desde la consola del administrador de paquetes:
+ ```
+ 	Update-Database   -Context Dsw2026TpiDbContext -Project Dsw2026Tpi.Data -StartupProject Dsw2026Tpi.Api
+   
+	Update-Database   -Context AuthenticationDbContext -Project Dsw2026Tpi.Data -StartupProject Dsw2026Tpi.Api
+ ```
+4. Correr el proyecto con CTRL+F5.
 ## DESCRIPCIÓN DE ENDPOINTS
 ### **Módulo de Autenticación**
 * POST /api/auth/admin/login:
