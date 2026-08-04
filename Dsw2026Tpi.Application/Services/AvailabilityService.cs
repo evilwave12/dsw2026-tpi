@@ -206,7 +206,6 @@ namespace Dsw2026Tpi.Application.Services
                 }
 
                 if(!bandera) await _persistence.Delete(dispo); //borra la disponibilidad solo si no tiene algun slot reservado
-
             }
 
             var currentDate = DateTime.Now;

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Dsw2026Tpi.Api.Services; //para admin inicial
 
 namespace Dsw2026Tpi.Api.Configurations;
 
@@ -44,6 +45,15 @@ public static class SecurityConfigurationExtensions
                 policy.RequireRole(Roles.Administrator))
             .AddPolicy(Policies.PatientPolicy, policy =>
                 policy.RequireRole(Roles.Patient));
+
+
+
+        return services;
+    }
+
+    public static IServiceCollection AddInitialAdmin(this IServiceCollection services) //para admin inicial
+    {
+        services.AddHostedService<InitialAdminSeeder>();
         return services;
     }
 

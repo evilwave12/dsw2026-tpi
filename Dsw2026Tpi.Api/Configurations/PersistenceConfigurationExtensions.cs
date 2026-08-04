@@ -26,8 +26,10 @@ public static class PersistenceConfigurationExtensions
             options.UseSeeding((c, t) =>
             {
                 c.Seedwork<IdentityRole>("Sources\\roles.json");
+                //c.Seedwork<ApplicationUser>("Sources\\users.json");
             });
         });
+
         return services;
     }
 }
