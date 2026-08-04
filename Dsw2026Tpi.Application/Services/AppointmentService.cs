@@ -58,21 +58,22 @@ namespace Dsw2026Tpi.Application.Services
         public async Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni) { 
 
             var paciente = await _persistence.First<Patient>(p => p.Dni == dni && p.Deleted == false) ??
-                throw new EntityNotFoundException(nameof(Patient)); 
+                throw new EntityNotFoundException(nameof(Patient));
 
-            var activeAppointments = await _persistence.GetFiltered<Appointment>(
-                a => a.Patient_Id == paciente.Id &&
-                a.Status == AppointmentStatus.Booked
-                );
+            var activeAppointments = await _persistence.GetFiltered<Appointment>(a => a.Patient_Id == paciente.Id && a.Status == AppointmentStatus.Booked);
 
-            var lista = new List<AppointmentModel.Response>();
+            var listaTurnos = new List<AppointmentModel.Response>();
+
+            if (activeAppointments == null || activeAppointments.Count() == 0) return new List<AppointmentModel.Response>();
+
+            var slot = await _persistence.GetById<AvailabilitySlot>(activeAppointments.First().Slot_Id);
 
             foreach (var turno in activeAppointments)
             {
-                lista.Add(new AppointmentModel.Response(turno.Slot.Availability.Doctor_Id, turno.Slot.Availability.Doctor.Name, dni,paciente.Name,turno.Slot.Start_time,turno.Slot.End_time));
+                listaTurnos.Add(new AppointmentModel.Response(turno.Slot.Availability.Doctor_Id, turno.Slot.Availability.Doctor.Name, dni,paciente.Name,turno.Slot.Start_time,turno.Slot.End_time));
             }
 
-            return lista ?? new List<AppointmentModel.Response>();
+            return listaTurnos;
         }
 
         public async Task CancelAppointment(Guid id) {
