@@ -22,6 +22,8 @@
 	git clone <URL-del-repo>
 
 	cd <carpeta-del-repo>
+
+	git checkout development
 ```
 2. Abrir la solución (archivo .sln)
 3. Actualizar la base de datos: desde la consola del administrador de paquetes:
