@@ -80,7 +80,6 @@ public class AuthenticationService : IAuthenticationService
 
         var user = await _userManager.FindByEmailAsync(request.Email);
         var existingPatient = await _persistence.First<Patient>(p => p.Dni == patientDniString);
-        //var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Dni == patientDniString);
 
         if (user == null && existingPatient == null)
         {
@@ -135,6 +134,7 @@ public class AuthenticationService : IAuthenticationService
             );
     }
 
+    /*
     public async Task<RegisterModel.Response> Register(RegisterModel.Request request)
     {
         if (!request.Email.IsEmailValid()) throw new ValidationException(ErrorCodes.REGISTER_USER_INVALID,
@@ -158,5 +158,5 @@ public class AuthenticationService : IAuthenticationService
         _logger.LogInformation("Usuario registrado: {Email}", request.Email);
 
         return new RegisterModel.Response(request.Email);
-    }
+    }*/
 }
