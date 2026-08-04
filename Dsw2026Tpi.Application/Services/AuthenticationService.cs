@@ -22,14 +22,12 @@ public class AuthenticationService : IAuthenticationService
     private readonly JwtService _jwtService;
     private readonly ILogger<AuthenticationService> _logger;
     private readonly IPersistence _persistence;
-    //private readonly Dsw2026TpiDbContext _context;
 
     public AuthenticationService(UserManager<ApplicationUser> userManager,
         ISignInService signInManager,
         RoleManager<IdentityRole> roleManager,
         JwtService jwtService,
         ILogger<AuthenticationService> logger,
-        /*Dsw2026TpiDbContext context*/
         IPersistence persistence)
         
     {
@@ -39,7 +37,6 @@ public class AuthenticationService : IAuthenticationService
         _jwtService = jwtService;
         _logger = logger;
         _persistence = persistence;
-        //_context = context;
     }
 
     public async Task<LoginAdminModel.Response> LoginAdmin(LoginAdminModel.Request request)
@@ -99,14 +96,11 @@ public class AuthenticationService : IAuthenticationService
 
             var patient = new Patient(
                 full_name:"",         
-                //phonenumber: "",
                 dni: patientDniString,
                 userId: Guid.Parse(user.Id)
                 );
 
             await _persistence.Add(patient);
-            /*await _context.Patients.AddAsync(patient);
-            await _context.SaveChangesAsync();*/
 
             _logger.LogInformation($"Paciente registrado: {request.Email}");
         }

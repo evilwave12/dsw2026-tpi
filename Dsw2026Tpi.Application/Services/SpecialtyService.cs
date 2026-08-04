@@ -30,14 +30,15 @@ namespace Dsw2026Tpi.Application.Services
                 throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
             }
 
-                var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
+            var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
                                                        s.Name.Contains(name)) && !s.Deleted, x => x.Name);
 
-                return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description));
+            return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description));
         }
 
         public async Task<Specialty> Add(SpecialtyModel.Request specialty)
         {
+            #region Validaciones
             if (string.IsNullOrWhiteSpace(specialty.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
             if (specialty.Name.Length > 100 || specialty.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));  
@@ -49,6 +50,7 @@ namespace Dsw2026Tpi.Application.Services
             if (string.IsNullOrWhiteSpace(specialty.Description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
 
             if (specialty.Description.Length > 100 || specialty.Description.Length < 10) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
+            #endregion
 
             _logger.LogInformation($"Especialidad {specialty.Name} creada exitosamente con descripción {specialty.Description}");
 

@@ -36,13 +36,13 @@ public class DoctorService : IDoctorService
         }
     }
 
-    public async Task<IEnumerable<AvailabilityModel.Response>> GetAvailabilities(Guid id_doctor)
+    public async Task<IEnumerable<DoctorModel.ResponseAvailability>> GetAvailabilities(Guid id_doctor)
     {
         var doctor = await _persistence.GetById<Doctor>(id_doctor) ?? throw new EntityNotFoundException(nameof(Doctor));
 
         var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == id_doctor);
           
-        return disponibilidades.Select(d => new AvailabilityModel.Response(((DiaSemana)d.Day_of_the_week).ToString(), d.Start_time.ToString("HH:mm"), d.End_time.ToString("HH:mm")));
+        return disponibilidades.Select(d => new DoctorModel.ResponseAvailability(d.Id, ((DiaSemana)d.Day_of_the_week).ToString(), d.Start_time, d.End_time));
     }
 
     public async Task<Doctor> Add(DoctorModel.Request doctor)
