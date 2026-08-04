@@ -7,7 +7,7 @@ namespace Dsw2026Tpi.Data;
 public class Dsw2026TpiDbContext: DbContext
 {
 
-    public DbSet<Patient> Patients { get; set; } //eliminar esto cuando se haga el repository
+    //public DbSet<Patient> Patients { get; set; } //
 
     public Dsw2026TpiDbContext(DbContextOptions<Dsw2026TpiDbContext> options):
         base(options)
