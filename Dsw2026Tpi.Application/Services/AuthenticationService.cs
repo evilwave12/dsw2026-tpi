@@ -7,6 +7,7 @@ using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Data;
 using Dsw2026Tpi.Data.Identity;
 using Dsw2026Tpi.Domain.Entities;
+using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -20,14 +21,16 @@ public class AuthenticationService : IAuthenticationService
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JwtService _jwtService;
     private readonly ILogger<AuthenticationService> _logger;
-    private readonly Dsw2026TpiDbContext _context;
+    private readonly IPersistence _persistence;
+    //private readonly Dsw2026TpiDbContext _context;
 
     public AuthenticationService(UserManager<ApplicationUser> userManager,
         ISignInService signInManager,
         RoleManager<IdentityRole> roleManager,
         JwtService jwtService,
         ILogger<AuthenticationService> logger,
-        Dsw2026TpiDbContext context)
+        /*Dsw2026TpiDbContext context*/
+        IPersistence persistence)
         
     {
         _userManager = userManager;
@@ -35,7 +38,8 @@ public class AuthenticationService : IAuthenticationService
         _roleManager = roleManager;
         _jwtService = jwtService;
         _logger = logger;
-        _context = context;
+        _persistence = persistence;
+        //_context = context;
     }
 
     public async Task<LoginAdminModel.Response> LoginAdmin(LoginAdminModel.Request request)
@@ -70,10 +74,14 @@ public class AuthenticationService : IAuthenticationService
 
 
         var patientDniString = request.Dni.ToString();
-        var patientPassword = $"{request.Email}A{request.Dni}"; //A mayus para que no tire error :u
+        var patientPassword = $"{request.Email}A{request.Dni}"; //A mayus para que no tire error :p
+
 
         var user = await _userManager.FindByEmailAsync(request.Email);
-        var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Dni == patientDniString);
+        var existingPatient = await _persistence.First<Patient>(p => p.Dni == patientDniString);
+        //var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.Dni == patientDniString);
+
+
 
         if (user == null && existingPatient == null)
         {
@@ -98,8 +106,9 @@ public class AuthenticationService : IAuthenticationService
                 userId: Guid.Parse(user.Id)
                 );
 
-            await _context.Patients.AddAsync(patient);
-            await _context.SaveChangesAsync();
+            await _persistence.Add(patient);
+            /*await _context.Patients.AddAsync(patient);
+            await _context.SaveChangesAsync();*/
 
             _logger.LogInformation($"Paciente registrado: {request.Email}");
         }
