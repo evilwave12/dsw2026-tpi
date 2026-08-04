@@ -124,7 +124,7 @@
     <value>Se requieren permisos para la operación solicitada</value>
   </data>
   <data name="DESCRIPTION_ERROR" xml:space="preserve">
-    <value>La descripción debe tener entre 11 y 100 caracteres</value>
+    <value>La descripción debe tener entre 10 y 100 caracteres</value>
   </data>
   <data name="DOCTOR_INACTIVE" xml:space="preserve">
     <value>El médico ya está eliminado</value>
@@ -151,10 +151,10 @@
     <value>Día de la semana no válido</value>
   </data>
   <data name="INVALID_DNI_ERROR" xml:space="preserve">
-    <value>El DNI no es válido</value>
+    <value>Debe ingresar un DNI válido</value>
   </data>
   <data name="INVALID_REASON_ERROR" xml:space="preserve">
-    <value>La razón debe contener más de 5 caracteres</value>
+    <value>La razón debe contener entre 5 y 300 caracteres</value>
   </data>
   <data name="INVALID_SPECIALTY_ERROR" xml:space="preserve">
     <value>La especialidad ingresada está eliminada</value>
@@ -162,7 +162,7 @@
   <data name="INVALID_TIME_CONFLICT" xml:space="preserve">
     <value>El tiempo de inicio debe ser anterior al tiempo de finalización</value>
   </data>
-  <data name="LICENSE_ERROR" xml:space="preserve">
+  <data name="EMPTY_LICENSE_ERROR" xml:space="preserve">
     <value>El número de licencia no puede ser vacio</value>
   </data>
   <data name="NAME_ERROR" xml:space="preserve">
@@ -200,5 +200,14 @@
   </data>
   <data name="VALIDATION_ERROR" xml:space="preserve">
     <value>Uno o más errores de validación ocurrieron</value>
+  </data>
+  <data name="INVALID_LICENSE_ERROR" xml:space="preserve">
+    <value>La matrícula no puede superar los 50 caracteres</value>
+  </data>
+  <data name="INVALID_EMAIL_LENGTH" xml:space="preserve">
+    <value>La longitud del mail no debe superar los 150 caracteres</value>
+  </data>
+  <data name="INVALID_EMAIL_FORMAT" xml:space="preserve">
+    <value>Debe ingresar un mail válido</value>
   </data>
 </root>

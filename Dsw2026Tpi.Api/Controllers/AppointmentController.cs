@@ -22,6 +22,7 @@ public class AppointmentController : AppController
 
 
     [HttpPost]
+    [Authorize(Policy = Policies.PatientPolicy)]
     [EnableRateLimiting(RateLimitingConfigurationExtensions.AppointmentBookingPolicy)] //rate limiting
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Add([FromBody] AppointmentModel.Request appointment)
@@ -32,6 +33,7 @@ public class AppointmentController : AppController
 
   
     [HttpGet("patient")]
+    [Authorize(Policy = Policies.PatientPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPatientAppointments([FromQuery] string dni)
     {
@@ -40,6 +42,7 @@ public class AppointmentController : AppController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = Policies.PatientPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CancelAppointment(Guid id) 
     {
@@ -48,7 +51,7 @@ public class AppointmentController : AppController
     }
 
     [HttpGet]
-    //[Authorize(Policy = Policies.AdminPolicy)]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByDate([FromQuery] DateOnly date)
     {
@@ -57,7 +60,7 @@ public class AppointmentController : AppController
     }
 
     [HttpGet("search")]
-    //[Authorize(Policy = Policies.AdminPolicy)]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetBySearch([FromQuery] int pageSize, 
                                                  [FromQuery] int pageIndex, 

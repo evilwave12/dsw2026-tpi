@@ -1,6 +1,7 @@
 ﻿using Dsw2026Tpi.Application.Dtos;
 using Dsw2026Tpi.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Dsw2026Tpi.CrossCutting.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace Dsw2026Tpi.Api.Controllers;
 
 
 [Route("api/availabilities")]
-//[Authorize(Policy = Policies.AdminPolicy)]
+[Authorize(Policy = Policies.AdminPolicy)]
 public class AvailabilitiesController : AppController
 {
     private readonly IAvailabilityService _service;

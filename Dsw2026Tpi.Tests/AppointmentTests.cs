@@ -42,9 +42,9 @@ namespace Dsw2026Tpi.Tests
 
             var request = new AppointmentModel.Request
             (
-                Id_doctor: doctorId,
-                Id_Slot: slotId,
-                dni: "45513019",
+                doctorId: doctorId,
+                availabilitySlotId: slotId,
+                patient: new AppointmentModel.PatientDto("45513019"),
                 reason: "Consulta general"
             );
 
@@ -79,20 +79,20 @@ namespace Dsw2026Tpi.Tests
 
             var request = new AppointmentModel.Request
             (
-                Id_doctor: doctorId,
-                Id_Slot: slotId,
-                dni: "45513019",
+                doctorId: doctorId,
+                availabilitySlotId: slotId,
+                patient: new AppointmentModel.PatientDto("45513019"),
                 reason: "Consulta general"
             );
 
             var expectedResponse = new AppointmentModel.Response
             (
-                Id_Doctor: doctorId,
-                Doctor_Name: "Dr. Perez",
-                Dni_Pac: "45513019",
-                Nombre_Pac: "Ian Nazareno Fernandez Campos",
-                StartTime: new TimeOnly(10, 0),
-                EndTime: new TimeOnly(10, 30)
+                doctorId: doctorId,
+                doctorName: "Dr. Perez",
+                patientDni: "45513019",
+                patientName: "Ian Nazareno Fernandez Campos",
+                startTime: new TimeOnly(10, 0),
+                endTime: new TimeOnly(10, 30)
             );
 
             var newDoctor = new Doctor("Dr. Perez", "MAT-9080",Guid.NewGuid(),doctorId);
@@ -129,9 +129,9 @@ namespace Dsw2026Tpi.Tests
             var slotId = Guid.NewGuid();
             var request = new AppointmentModel.Request
             (
-                Id_doctor: doctorId,
-                Id_Slot: slotId,
-                dni: "45513019",
+                doctorId: doctorId,
+                availabilitySlotId: slotId,
+                patient: new AppointmentModel.PatientDto("45513019"),
                 reason: "Consulta general"
             );
 
