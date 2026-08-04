@@ -23,5 +23,40 @@
     "id": "55555555-5555-5555-5555-555555555555",
     "name": "Ginecología",
     "description": "Atención de la salud del sistema reproductor femenino."
+  },
+  {
+    "id": "66666666-6666-6666-6666-666666666666",
+    "name": "Traumatología",
+    "description": "Diagnóstico y tratamiento de lesiones del sistema musculoesquelético."
+  },
+  {
+    "id": "77777777-7777-7777-7777-777777777777",
+    "name": "Oftalmología",
+    "description": "Atención de enfermedades y trastornos de la visión y los ojos."
+  },
+  {
+    "id": "88888888-8888-8888-8888-888888888888",
+    "name": "Psiquiatría",
+    "description": "Diagnóstico y tratamiento de los trastornos de la salud mental."
+  },
+  {
+    "id": "99999999-9999-9999-9999-999999999999",
+    "name": "Otorrinolaringología",
+    "description": "Atención de afecciones del oído, la nariz y la garganta."
+  },
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "name": "Endocrinología",
+    "description": "Estudio y tratamiento de trastornos hormonales y metabólicos."
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "name": "Gastroenterología",
+    "description": "Diagnóstico y tratamiento de enfermedades del aparato digestivo."
+  },
+  {
+    "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+    "name": "Urología",
+    "description": "Atención del aparato urinario y del sistema reproductor masculino."
   }
 ]

@@ -46,5 +46,77 @@
     "name": "Nicolás Sánchez",
     "phoneNumber": "3815551008",
     "dni": "35789123"
+  },
+  {
+    "id": "99999999-9999-9999-9999-999999999999",
+    "name": "Camila Romero",
+    "phoneNumber": "3815551009",
+    "dni": "39012345"
+  },
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "name": "Federico Giménez",
+    "phoneNumber": "3815551010",
+    "dni": "26543210"
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "name": "Agustina Ruiz",
+    "phoneNumber": "3815551011",
+    "dni": "40678901"
+  },
+  {
+    "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+    "name": "Bruno Molina",
+    "phoneNumber": "3815551012",
+    "dni": "31234567"
+  },
+  {
+    "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+    "name": "Julieta Ferreyra",
+    "phoneNumber": "3815551013",
+    "dni": "43789012"
+  },
+  {
+    "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+    "name": "Santiago Ojeda",
+    "phoneNumber": "3815551014",
+    "dni": "29876543"
+  },
+  {
+    "id": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+    "name": "Micaela Vera",
+    "phoneNumber": "3815551015",
+    "dni": "37890123"
+  },
+  {
+    "id": "10101010-1010-1010-1010-101010101010",
+    "name": "Ramiro Acosta",
+    "phoneNumber": "3815551016",
+    "dni": "32345678"
+  },
+  {
+    "id": "12121212-1212-1212-1212-121212121212",
+    "name": "Delfina Cabrera",
+    "phoneNumber": "3815551017",
+    "dni": "44890123"
+  },
+  {
+    "id": "13131313-1313-1313-1313-131313131313",
+    "name": "Ignacio Ledesma",
+    "phoneNumber": "3815551018",
+    "dni": "28123456"
+  },
+  {
+    "id": "20202020-2020-2020-2020-202020202020",
+    "name": "Renata Suárez",
+    "phoneNumber": "3815551019",
+    "dni": "41567890"
+  },
+  {
+    "id": "21212121-2121-2121-2121-212121212121",
+    "name": "Lautaro Medina",
+    "phoneNumber": "3815551020",
+    "dni": "34567891"
   }
 ]
