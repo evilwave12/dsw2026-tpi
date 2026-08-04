@@ -48,6 +48,7 @@ public class Program
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseRateLimiter(); // rate limiting
             app.UseCors();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
