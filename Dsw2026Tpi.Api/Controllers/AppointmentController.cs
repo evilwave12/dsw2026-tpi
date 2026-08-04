@@ -21,7 +21,6 @@ public class AppointmentController : AppController
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-
     public async Task<IActionResult> Add([FromBody] AppointmentModel.Request appointment)
     {
         var appointment2 = await _service.Add(appointment);
@@ -29,14 +28,13 @@ public class AppointmentController : AppController
     }
 
   
-    [HttpGet("/patient")]
+    [HttpGet("patient")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPatientAppointments([FromQuery] string dni)
     {
         var appointments = await _service.GetActiveAppointmentsByPatientDni(dni);
         return Ok(appointments);
     }
-
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,7 +53,7 @@ public class AppointmentController : AppController
         return Ok(appointments);
     }
 
-    [HttpGet("/search")]
+    [HttpGet("search")]
     //[Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetBySearch([FromQuery] int pageSize, 

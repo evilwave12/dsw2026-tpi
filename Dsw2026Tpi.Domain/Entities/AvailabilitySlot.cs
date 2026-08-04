@@ -12,7 +12,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public bool Deleted { get; private set; } = false;
         public AvailabilitySlotStatus Status { get; set; } = AvailabilitySlotStatus.Available;
         public Guid AvailabilityId { get; set; }
-        public Availability Availability { get; private set; } //prop navegacion
+        public Availability Availability { get; set; } //prop navegacion
 
 
         #region Constructor for EF
