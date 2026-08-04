@@ -250,6 +250,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El turno está en una hora pasada.
+        /// </summary>
+        public static string PAST_TIME_CONFLICT {
+            get {
+                return ResourceManager.GetString("PAST_TIME_CONFLICT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se excedió el límite de solicitudes permitidas. Intente nuevamente más tarde..
         /// </summary>
         public static string RATE_LIMIT_EXCEEDED {

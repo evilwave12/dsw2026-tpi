@@ -25,6 +25,7 @@ namespace Dsw2026Tpi.Application.Services
         }
         public async Task<AppointmentModel.Response> Add(AppointmentModel.Request cita) //post
         {
+            #region Validaciones
             var doctor = await _persistence.GetById<Doctor>(cita.doctorId) ?? throw new EntityNotFoundException(nameof(Doctor));
 
             var slot = await _persistence.GetById<AvailabilitySlot>(cita.availabilitySlotId) ?? throw new EntityNotFoundException(nameof(AvailabilitySlot));
@@ -36,15 +37,21 @@ namespace Dsw2026Tpi.Application.Services
             if (slot.Status != AvailabilitySlotStatus.Available)
             {
                 _logger.LogError($"Error en la reserva. Slot {cita.availabilitySlotId} ya ocupado");
-
                 throw new ConflictException(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT, nameof(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT)).WithDetail("Slot_Status", "Slot_Not_Available");
-
             }
-          
-            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now)) throw new ConflictException(ErrorCodes.PAST_DATE_CONFLICT, nameof(ErrorCodes.PAST_DATE_CONFLICT)).WithDetail("Slot_Date", "Slot_In_Past_Date");
-            
+
+            if (slot.Slot_date < DateOnly.FromDateTime(DateTime.Now))
+            {
+                throw new ConflictException(ErrorCodes.PAST_DATE_CONFLICT, nameof(ErrorCodes.PAST_DATE_CONFLICT)).WithDetail("Slot_Date", "Slot_In_Past_Date");
+            }
+            else if(slot.Slot_date == DateOnly.FromDateTime(DateTime.Now) && slot.Start_time < TimeOnly.FromDateTime(DateTime.Now))
+            {
+                throw new ConflictException(ErrorCodes.PAST_TIME_CONFLICT, nameof(ErrorCodes.PAST_TIME_CONFLICT)).WithDetail("Slot_Start_Time", "Slot_In_Past_Time");
+            }
+
             if (cita.reason.Length < 5 || cita.reason.Length > 300) throw new ValidationException(ErrorCodes.INVALID_REASON_ERROR, nameof(ErrorCodes.INVALID_REASON_ERROR)); //Motivo inválido
-            
+            #endregion
+
             slot.Status = AvailabilitySlotStatus.Booked; //se registra el turno como reservado
 
             await _persistence.Update(slot);
@@ -76,15 +83,17 @@ namespace Dsw2026Tpi.Application.Services
             return listaTurnos;
         }
 
-        public async Task CancelAppointment(Guid id) {
-
+        public async Task CancelAppointment(Guid id) 
+        {
+            #region Validaciones
             var appointment = await _persistence.GetById<Appointment>(id)
                 ?? throw new EntityNotFoundException(nameof(Appointment));
 
             if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException(ErrorCodes.INVALID_APPOINTMENT_STATUS, nameof(ErrorCodes.INVALID_APPOINTMENT_STATUS)).WithDetail("appointmentStatus", "status_already_cancelled");
 
             if (appointment.Status != AppointmentStatus.Booked) throw new ValidationException(ErrorCodes.INVALID_APPOINTMENT_ERROR,nameof(ErrorCodes.INVALID_APPOINTMENT_ERROR));
-            
+            #endregion
+
             appointment.Status = AppointmentStatus.Cancelled;
 
             await _persistence.Update(appointment);

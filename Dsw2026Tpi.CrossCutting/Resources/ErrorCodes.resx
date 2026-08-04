@@ -210,4 +210,7 @@
   <data name="INVALID_EMAIL_FORMAT" xml:space="preserve">
     <value>Debe ingresar un mail válido</value>
   </data>
+  <data name="PAST_TIME_CONFLICT" xml:space="preserve">
+    <value>El turno está en una hora pasada</value>
+  </data>
 </root>
