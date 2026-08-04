@@ -1,7 +1,10 @@
 using Dsw2026Tpi.Api.Configurations;
 using Dsw2026Tpi.Api.Middlewares;
+using Dsw2026Tpi.CrossCutting.Identity;
+using Dsw2026Tpi.Data.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace Dsw2026Tpi.Api;
@@ -25,6 +28,7 @@ public class Program
             builder.AddSerilogConfiguration();
             builder.Services.AddAppIdentity();
             builder.Services.AddAppAuthentication(builder.Configuration);
+            builder.Services.AddInitialAdmin(); //para admin inicial
             builder.Services.AddAppRateLimiting(builder.Configuration);
             builder.Services.AddSwaggerConfiguration();
             builder.Services.AddApplicationPersistence(builder.Configuration);
