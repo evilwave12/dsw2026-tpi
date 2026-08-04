@@ -79,6 +79,7 @@ namespace Dsw2026Tpi.Application.Services
 
         public async Task <Specialty> Update(Guid id, SpecialtyModel.Request specialty)
         {
+            #region Validaciones
             var specialty2 = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
 
             if (specialty2.Deleted) throw new ConflictException(ErrorCodes.SPECIALTY_INACTIVE, nameof(ErrorCodes.SPECIALTY_INACTIVE)).WithDetail("specialtyDeleted", "specialty_already_deleted");
@@ -90,6 +91,7 @@ namespace Dsw2026Tpi.Application.Services
             if (string.IsNullOrWhiteSpace(specialty.Description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
 
             if (specialty.Description.Length > 101 || specialty.Description.Length < 11) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
+            #endregion
 
             specialty2.Name = specialty.Name;
             specialty2.Description = specialty.Description;

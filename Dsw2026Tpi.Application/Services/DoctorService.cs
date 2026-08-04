@@ -47,6 +47,7 @@ public class DoctorService : IDoctorService
 
     public async Task<Doctor> Add(DoctorModel.Request doctor)
     {
+        #region Validaciones
         if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
         if(doctor.Name.Length > 100 || doctor.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
@@ -60,6 +61,7 @@ public class DoctorService : IDoctorService
 
         var specialty = await _persistence.GetById<Specialty>(doctor.SpecialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
         if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
+        #endregion
 
         var newDoctor = await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, doctor.SpecialtyId));
 
@@ -70,6 +72,7 @@ public class DoctorService : IDoctorService
 
     public async Task<Doctor> Update(Guid id, DoctorModel.Request doctorRequest)
     {
+        #region Validaciones
         var doctorExistente = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
         if (string.IsNullOrWhiteSpace(doctorRequest.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
@@ -78,7 +81,7 @@ public class DoctorService : IDoctorService
 
         if (string.IsNullOrWhiteSpace(doctorRequest.LicenseNumber)) throw new ValidationException(ErrorCodes.EMPTY_LICENSE_ERROR, nameof(ErrorCodes.EMPTY_LICENSE_ERROR));
         if (doctorRequest.LicenseNumber.Length > 50) throw new ValidationException(ErrorCodes.INVALID_LICENSE_ERROR, nameof(ErrorCodes.INVALID_LICENSE_ERROR));
-
+        #endregion
 
         doctorExistente.Name = doctorRequest.Name;
         doctorExistente.LicenseNumber = doctorRequest.LicenseNumber;
