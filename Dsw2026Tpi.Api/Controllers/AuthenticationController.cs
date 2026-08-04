@@ -1,6 +1,8 @@
 ﻿using Dsw2026Tpi.Api.Configurations;
 using Dsw2026Tpi.Application.Dtos;
 using Dsw2026Tpi.Application.Interfaces;
+using Dsw2026Tpi.CrossCutting.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -8,6 +10,7 @@ namespace Dsw2026Tpi.Api.Controllers;
 
 
 [Route("api/auth")]
+
 public class AuthenticationController : AppController
 {
     private readonly IAuthenticationService _authenticationService;
@@ -17,13 +20,16 @@ public class AuthenticationController : AppController
         _authenticationService = authenticationService;
     }
 
+    /*
     [HttpPost("admin/register")]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Register([FromBody] RegisterModel.Request request)
     {
         var result = await _authenticationService.Register(request);
         return Ok(result.Email); 
     }
+    */
 
     [HttpPost("admin/login")]
     [EnableRateLimiting(RateLimitingConfigurationExtensions.AdminLoginPolicy)] //rate limiting
