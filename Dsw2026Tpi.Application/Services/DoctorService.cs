@@ -36,7 +36,7 @@ public class DoctorService : IDoctorService
         }
     }
 
-    public async Task<IEnumerable<AvailabilityModel.Response>> GetAvailabilities(Guid id_doctor) //finikited
+    public async Task<IEnumerable<AvailabilityModel.Response>> GetAvailabilities(Guid id_doctor)
     {
         var doctor = await _persistence.GetById<Doctor>(id_doctor) ?? throw new EntityNotFoundException(nameof(Doctor));
 
@@ -98,7 +98,7 @@ public class DoctorService : IDoctorService
         return new DoctorModel.Response(doctorExistente.Id, doctorExistente.Name, doctorExistente.LicenseNumber, new DoctorModel.SpecialtyDto(specialty.Id, specialty.Name, specialty.Description));
     }
 
-    public async Task Delete(Guid id) //finikited
+    public async Task Delete(Guid id)
     {
         var doctor = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
