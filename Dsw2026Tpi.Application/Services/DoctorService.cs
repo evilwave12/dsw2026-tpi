@@ -67,31 +67,35 @@ public class DoctorService : IDoctorService
         return new DoctorModel.Response(newDoctor.Id, newDoctor.Name, newDoctor.LicenseNumber, new DoctorModel.SpecialtyDto(specialty.Id, specialty.Name, specialty.Description));
     }
 
-    public async Task<DoctorModel.Response> Update(Guid id, DoctorModel.Request doctor) //finikited
+    public async Task<DoctorModel.Response> Update(Guid id, DoctorModel.Request doctorRequest)
     {
-        var doctor2 = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
+        var doctorExistente = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
+        if (string.IsNullOrWhiteSpace(doctorRequest.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-        if (doctor.Name.Length > 101 || doctor.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
+        if (doctorRequest.Name.Length > 101 || doctorRequest.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.LICENSE_ERROR, nameof(ErrorCodes.LICENSE_ERROR));
+        if (string.IsNullOrWhiteSpace(doctorRequest.LicenseNumber)) throw new ValidationException(ErrorCodes.LICENSE_ERROR, nameof(ErrorCodes.LICENSE_ERROR));
 
 
-        doctor2.Name = doctor.Name;
-        doctor2.LicenseNumber = doctor.LicenseNumber;
+        doctorExistente.Name = doctorRequest.Name;
+        doctorExistente.LicenseNumber = doctorRequest.LicenseNumber;
 
-        if (doctor2.SpecialtyId != doctor.SpecialtyId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
+        var specialty = await _persistence.GetById<Specialty>(doctorRequest.SpecialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
+        if (doctorExistente.SpecialtyId != doctorRequest.SpecialtyId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
         {
-            var specialty = await _persistence.GetById<Specialty>(doctor.SpecialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
+            
             if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
 
-            doctor2.SpecialtyId = doctor.SpecialtyId;
+            doctorExistente.SpecialtyId = doctorRequest.SpecialtyId;
+
+            await _persistence.Update(doctorExistente);
+            return new DoctorModel.Response(doctorExistente.Id, doctorExistente.Name, doctorExistente.LicenseNumber, new DoctorModel.SpecialtyDto(doctorExistente.Specialty.Id, doctorExistente.Specialty.Name, doctorExistente.Specialty.Description));
         }
 
-        await _persistence.Update(doctor2);
+        await _persistence.Update(doctorExistente);
 
-        return new DoctorModel.Response(doctor2.Id, doctor2.Name, doctor2.LicenseNumber, new DoctorModel.SpecialtyDto(doctor2.Specialty?.Id, doctor2.Specialty?.Name, doctor2.Specialty?.Description));
+        return new DoctorModel.Response(doctorExistente.Id, doctorExistente.Name, doctorExistente.LicenseNumber, new DoctorModel.SpecialtyDto(specialty.Id, specialty.Name, specialty.Description));
     }
 
     public async Task Delete(Guid id) //finikited
