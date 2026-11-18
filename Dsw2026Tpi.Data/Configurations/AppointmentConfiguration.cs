@@ -12,10 +12,10 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 
         builder.HasOne(a => a.Patient)
         .WithMany()
-        .HasForeignKey(a => a.Patient_Id);
+        .HasForeignKey(a => a.PatientId);
 
         builder.HasOne(a => a.Slot)
             .WithMany()
-            .HasForeignKey(a => a.Slot_Id);
+            .HasForeignKey(a => a.SlotId);
     }
 }

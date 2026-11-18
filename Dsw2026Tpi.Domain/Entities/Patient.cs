@@ -20,11 +20,11 @@ namespace Dsw2026Tpi.Domain.Entities
 #pragma warning restore CS8618
         #endregion
 
-        public Patient (string? full_name, string dni, Guid userId, Guid ? id = null) : base(id)
+        public Patient (string? fullName, string dni, Guid userId, Guid ? id = null) : base(id)
         {
             UserId = userId;
             Dni = dni;
-            Name = full_name;
+            Name = fullName;
         }
 
         public void Deactivate()

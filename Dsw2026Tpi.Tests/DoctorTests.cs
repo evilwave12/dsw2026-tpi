@@ -44,7 +44,7 @@ namespace Dsw2026Tpi.Tests
 
             //Assert
 
-            Assert.Equal(nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR), exception.Error.ErrorCode);
+            Assert.Equal(nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR), exception.Error.errorCode);
 
         }
 
@@ -71,7 +71,7 @@ namespace Dsw2026Tpi.Tests
 
             //Assert
 
-            Assert.Equal(nameof(ErrorCodes.INVALID_SPECIALTY_ERROR), exception.Error.ErrorCode);
+            Assert.Equal(nameof(ErrorCodes.INVALID_SPECIALTY_ERROR), exception.Error.errorCode);
         }
         
 

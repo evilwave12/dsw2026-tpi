@@ -7,8 +7,8 @@ namespace Dsw2026Tpi.Application.Dtos
 {
     public record AvailabilityModel
     {
-        public record Response(string day_of_the_week, string start_time, string end_time);
-        public record DayRequest(string day_of_the_week, TimeOnly start_time, TimeOnly end_time);
+        public record Response(string dayOfTheWeek, string startTime, string endTime);
+        public record DayRequest(string dayOfTheWeek, TimeOnly startTime, TimeOnly endTime);
         public record Request(Guid DoctorId, IEnumerable<DayRequest> Days);
     }
 

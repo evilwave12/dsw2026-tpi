@@ -25,15 +25,15 @@ public class AvailabilitiesController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Add([FromBody] AvailabilityModel.Request request)
     {
-        var disponibilidades = await _service.CreateAvailabilitiesAsync(request);
-        return Ok(disponibilidades);
+        var availabilities = await _service.CreateAvailabilitiesAsync(request);
+        return Ok(availabilities);
     }
 
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] AvailabilityModel.Request request)
     {
-        var disponibilidad = await _service.Update(request);
-        return Ok(disponibilidad);
+        var availability = await _service.Update(request);
+        return Ok(availability);
     }
 }

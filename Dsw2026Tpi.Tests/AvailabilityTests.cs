@@ -58,7 +58,7 @@ namespace Dsw2026Tpi.Tests
 
             //Assert
 
-            Assert.Equal(nameof(ErrorCodes.SOLAPAMIENTO_CONFLICT), exception.Error.ErrorCode);
+            Assert.Equal(nameof(ErrorCodes.OVERLAP_CONFLICT), exception.Error.errorCode);
         }
 
     }

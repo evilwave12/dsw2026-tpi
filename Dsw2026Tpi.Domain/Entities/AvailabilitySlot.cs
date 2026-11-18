@@ -6,9 +6,9 @@ namespace Dsw2026Tpi.Domain.Entities
 {
     public class AvailabilitySlot : EntityBase
     {
-        public DateOnly Slot_date { get; init; }
-        public TimeOnly Start_time { get; init; }
-        public TimeOnly End_time { get; init; }
+        public DateOnly SlotDate { get; init; }
+        public TimeOnly StartTime { get; init; }
+        public TimeOnly EndTime { get; init; }
         public bool Deleted { get; private set; } = false;
         public AvailabilitySlotStatus Status { get; set; } = AvailabilitySlotStatus.Available;
         public Guid AvailabilityId { get; set; }
@@ -23,12 +23,12 @@ namespace Dsw2026Tpi.Domain.Entities
 #pragma warning restore CS8618
         #endregion
 
-        public AvailabilitySlot(Guid availabilityId, DateOnly slot_date, TimeOnly start_time, TimeOnly end_time) : base()
+        public AvailabilitySlot(Guid availabilityId, DateOnly slotDate, TimeOnly startTime, TimeOnly endTime) : base()
         {
             AvailabilityId = availabilityId;
-            Slot_date = slot_date;
-            Start_time = start_time;
-            End_time = end_time;
+            SlotDate = slotDate;
+            StartTime = startTime;
+            EndTime = endTime;
         }
         public void Deactivate()
         {

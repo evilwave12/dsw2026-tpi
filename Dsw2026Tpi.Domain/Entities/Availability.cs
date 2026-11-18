@@ -10,10 +10,10 @@ namespace Dsw2026Tpi.Domain.Entities
     {
         public byte Month { get; init; }
         public short Year { get; init; }
-        public byte Day_of_the_week { get; init; }
-        public TimeOnly Start_time { get; init; }
-        public TimeOnly End_time { get; init; }
-        public Guid Doctor_Id { get; set; }
+        public byte DayOfTheWeek { get; init; }
+        public TimeOnly StartTime { get; init; }
+        public TimeOnly EndTime { get; init; }
+        public Guid DoctorId { get; set; }
         public Doctor Doctor { get; private set; } //propiedad navegacion
 
         #region Constructor for EF
@@ -24,23 +24,23 @@ namespace Dsw2026Tpi.Domain.Entities
 #pragma warning restore CS8618
         #endregion
 
-        public Availability(Guid doctorId, byte month, short year, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
+        public Availability(Guid doctorId, byte month, short year, byte dayOfTheWeek, TimeOnly startTime, TimeOnly endTime) : base()
         {
-            Doctor_Id = doctorId;
+            DoctorId = doctorId;
             Month = month;
             Year = year;
-            Day_of_the_week = day_of_the_week;
-            Start_time = start_time;
-            End_time = end_time;
+            DayOfTheWeek = dayOfTheWeek;
+            StartTime = startTime;
+            EndTime = endTime;
         }
 
         [JsonConstructor]
-        public Availability(Guid doctor_Id, byte day_of_the_week, TimeOnly start_time, TimeOnly end_time) : base()
+        public Availability(Guid doctorId, byte dayOfTheWeek, TimeOnly startTime, TimeOnly endTime) : base()
         {
-            Doctor_Id = doctor_Id;
-            Day_of_the_week = day_of_the_week;
-            Start_time = start_time;
-            End_time = end_time;
+            DoctorId = doctorId;
+            DayOfTheWeek = dayOfTheWeek;
+            StartTime = startTime;
+            EndTime = endTime;
 
             Month = (byte)DateTime.Now.Month;
             Year = (short)DateTime.Now.Year;
