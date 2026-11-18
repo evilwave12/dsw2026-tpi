@@ -1,6 +1,6 @@
 ﻿namespace Dsw2026Tpi.CrossCutting.Models;
 
-public record ErrorResponse(string ErrorCode, string Message)
+public record ErrorResponse(string errorCode, string message)
 {
     public ICollection<ErrorDetail> Details { get; } = [];
     public void AddDetail(string field, string issue)
@@ -15,4 +15,5 @@ public record ErrorResponse(string ErrorCode, string Message)
         }
     }
 }
-public record ErrorDetail(string Field, string Issue);
+
+public record ErrorDetail(string field, string issue);

@@ -28,8 +28,8 @@ public class Program
             builder.AddSerilogConfiguration();
             builder.Services.AddAppIdentity();
             builder.Services.AddAppAuthentication(builder.Configuration);
-            builder.Services.AddInitialAdmin(); //para admin inicial.
-            builder.Services.AddInitialPatients(); //para cargar pacientes ya registrados
+            builder.Services.AddInitialAdmin(); //para admin inicial
+            builder.Services.AddInitialPatients(); //para cargar patients ya registrados
             builder.Services.AddAppRateLimiting(builder.Configuration);
             builder.Services.AddSwaggerConfiguration();
             builder.Services.AddApplicationPersistence(builder.Configuration);

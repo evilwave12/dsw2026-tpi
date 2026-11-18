@@ -30,7 +30,7 @@ public class PatientSeeder : IHostedService
         var path = Path.Combine(AppContext.BaseDirectory, "Sources", "patients.json");
         if (!File.Exists(path))
         {
-            _logger.LogWarning("No se encontró Sources/patients.json, se omite la carga inicial de pacientes");
+            _logger.LogWarning("No se encontró Sources/patients.json, se omite la carga inicial de patients");
             return;
         }
 
@@ -71,7 +71,7 @@ public class PatientSeeder : IHostedService
         }
 
         await context.SaveChangesAsync(cancellationToken);
-        _logger.LogInformation("Carga inicial de pacientes completada");
+        _logger.LogInformation("Carga inicial de patients completada");
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

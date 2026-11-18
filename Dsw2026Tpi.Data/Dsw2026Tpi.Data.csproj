@@ -30,7 +30,7 @@
     <None Update="Sources\availabilities.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Sources\feriados.json">
+    <None Update="Sources\holidays.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sources\patients.json">

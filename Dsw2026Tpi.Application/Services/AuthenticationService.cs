@@ -95,7 +95,7 @@ public class AuthenticationService : IAuthenticationService
             _ = await _userManager.AddToRoleAsync(user, Roles.Patient);
 
             var patient = new Patient(
-                full_name:"",         
+                fullName:"",         
                 dni: patientDniString,
                 userId: Guid.Parse(user.Id)
                 );
@@ -114,7 +114,7 @@ public class AuthenticationService : IAuthenticationService
             var result = await _signInManager.CheckPassword(user!, patientPassword);
             if (!result)
             {
-                _logger.LogError($"El DNI no concuerda con el mail para el paciente: {request.Email}");
+                _logger.LogError($"El DNI no concuerda con el mail para el patient: {request.Email}");
                 throw new AuthenticationException();
             }
         }

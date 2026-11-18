@@ -121,7 +121,7 @@
     <value>Usuario o contraseña incorrectos</value>
   </data>
   <data name="AUTHORIZATION_FAILED" xml:space="preserve">
-    <value>Se requieren permisos para la operación solicitada</value>
+    <value>Se requieren permisos para la operación soliappointmentda</value>
   </data>
   <data name="DESCRIPTION_ERROR" xml:space="preserve">
     <value>La descripción debe tener entre 10 y 100 caracteres</value>
@@ -142,10 +142,10 @@
     <value>La entidad {0} no se encontró</value>
   </data>
   <data name="INVALID_APPOINTMENT_ERROR" xml:space="preserve">
-    <value>No se puede cancelar la cita si no está reservada</value>
+    <value>No se puede cancelar la appointment si no está reservada</value>
   </data>
   <data name="INVALID_APPOINTMENT_STATUS" xml:space="preserve">
-    <value>La cita ya fue cancelada</value>
+    <value>La appointment ya fue cancelada</value>
   </data>
   <data name="INVALID_DAY_ERROR" xml:space="preserve">
     <value>Día de la semana no válido</value>
@@ -169,7 +169,7 @@
     <value>El nombre debe tener entre 3 y 100 caracteres</value>
   </data>
   <data name="PAST_DATE_CONFLICT" xml:space="preserve">
-    <value>El turno está en una fecha pasada</value>
+    <value>El appoint está en una fecha pasada</value>
   </data>
   <data name="RATE_LIMIT_EXCEEDED" xml:space="preserve">
     <value>Se excedió el límite de solicitudes permitidas. Intente nuevamente más tarde.</value>
@@ -181,10 +181,10 @@
     <value>Datos de registración de usuario no válidos</value>
   </data>
   <data name="SLOT_NOT_AVAILABLE_CONFLICT" xml:space="preserve">
-    <value>El turno no está disponible</value>
+    <value>El appoint no está disponible</value>
   </data>
-  <data name="SOLAPAMIENTO_CONFLICT" xml:space="preserve">
-    <value>Las disponibilidades no pueden solaparse</value>
+  <data name="OVERLAP_CONFLICT" xml:space="preserve">
+    <value>Las availabilities no pueden solaparse</value>
   </data>
   <data name="SPECIALTY_EXISTS" xml:space="preserve">
     <value>La especialidad ya existe</value>
@@ -193,7 +193,7 @@
     <value>La especialidad ya está eliminada</value>
   </data>
   <data name="START_TIME_ERROR" xml:space="preserve">
-    <value>El tiempo de inicio del turno no puede ser mayor o igual al tiempo de finalización</value>
+    <value>El tiempo de inicio del appoint no puede ser mayor o igual al tiempo de finalización</value>
   </data>
   <data name="UNHANDLED_ERROR" xml:space="preserve">
     <value>Se produjo un error no controlado</value>
@@ -211,6 +211,6 @@
     <value>Debe ingresar un mail válido</value>
   </data>
   <data name="PAST_TIME_CONFLICT" xml:space="preserve">
-    <value>El turno está en una hora pasada</value>
+    <value>El appoint está en una hora pasada</value>
   </data>
 </root>

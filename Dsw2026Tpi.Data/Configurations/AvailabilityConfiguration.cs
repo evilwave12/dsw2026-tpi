@@ -12,7 +12,7 @@ public class AvailabilityConfiguration : IEntityTypeConfiguration<Availability>
 
         builder.HasOne(a => a.Doctor)
         .WithMany()
-        .HasForeignKey(a => a.Doctor_Id);
+        .HasForeignKey(a => a.DoctorId);
     }
 
 

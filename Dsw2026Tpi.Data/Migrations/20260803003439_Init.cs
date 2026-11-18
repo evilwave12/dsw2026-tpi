@@ -73,10 +73,10 @@ namespace Dsw2026Tpi.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Month = table.Column<byte>(type: "tinyint", nullable: false),
                     Year = table.Column<short>(type: "smallint", nullable: false),
-                    Day_of_the_week = table.Column<byte>(type: "tinyint", nullable: false),
-                    Start_time = table.Column<TimeOnly>(type: "time", nullable: false),
-                    End_time = table.Column<TimeOnly>(type: "time", nullable: false),
-                    Doctor_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DayOfTheWeek = table.Column<byte>(type: "tinyint", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    DoctorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -84,8 +84,8 @@ namespace Dsw2026Tpi.Data.Migrations
                 {
                     table.PrimaryKey("PK_Availabilities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Availabilities_Doctors_Doctor_Id",
-                        column: x => x.Doctor_Id,
+                        name: "FK_Availabilities_Doctors_DoctorId",
+                        column: x => x.DoctorId,
                         principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -96,9 +96,9 @@ namespace Dsw2026Tpi.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Slot_date = table.Column<DateOnly>(type: "date", nullable: false),
-                    Start_time = table.Column<TimeOnly>(type: "time", nullable: false),
-                    End_time = table.Column<TimeOnly>(type: "time", nullable: false),
+                    SlotDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     AvailabilityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -122,11 +122,11 @@ namespace Dsw2026Tpi.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Cancelled_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Attended_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CancelledAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    AttendedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Slot_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Patient_Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SlotId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PatientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -134,33 +134,33 @@ namespace Dsw2026Tpi.Data.Migrations
                 {
                     table.PrimaryKey("PK_Appointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Appointments_AvailabilitySlots_Slot_Id",
-                        column: x => x.Slot_Id,
+                        name: "FK_Appointments_AvailabilitySlots_SlotId",
+                        column: x => x.SlotId,
                         principalTable: "AvailabilitySlots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Appointments_Patients_Patient_Id",
-                        column: x => x.Patient_Id,
+                        name: "FK_Appointments_Patients_PatientId",
+                        column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_Patient_Id",
+                name: "IX_Appointments_PatientId",
                 table: "Appointments",
-                column: "Patient_Id");
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_Slot_Id",
+                name: "IX_Appointments_SlotId",
                 table: "Appointments",
-                column: "Slot_Id");
+                column: "SlotId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Availabilities_Doctor_Id",
+                name: "IX_Availabilities_DoctorId",
                 table: "Availabilities",
-                column: "Doctor_Id");
+                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AvailabilitySlots_AvailabilityId",

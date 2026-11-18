@@ -69,9 +69,9 @@ public class AppointmentController : AppController
                                                  [FromQuery] string? dni,
                                                  [FromQuery] DateOnly? date)
     {
-        var citas = await _service.GetBySearch(pageSize, pageIndex, specialtyId, doctorId, dni, date);
+        var appointments = await _service.GetBySearch(pageSize, pageIndex, specialtyId, doctorId, dni, date);
 
-        return Ok(citas);
+        return Ok(appointments);
     }
 }
 

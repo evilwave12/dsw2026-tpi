@@ -70,7 +70,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Se requieren permisos para la operación solicitada.
+        ///   Busca una cadena traducida similar a Se requieren permisos para la operación soliappointmentda.
         /// </summary>
         public static string AUTHORIZATION_FAILED {
             get {
@@ -142,7 +142,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No se puede cancelar la cita si no está reservada.
+        ///   Busca una cadena traducida similar a No se puede cancelar la appointment si no está reservada.
         /// </summary>
         public static string INVALID_APPOINTMENT_ERROR {
             get {
@@ -151,7 +151,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a La cita ya fue cancelada.
+        ///   Busca una cadena traducida similar a La appointment ya fue cancelada.
         /// </summary>
         public static string INVALID_APPOINTMENT_STATUS {
             get {
@@ -241,7 +241,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a El turno está en una fecha pasada.
+        ///   Busca una cadena traducida similar a El appoint está en una fecha pasada.
         /// </summary>
         public static string PAST_DATE_CONFLICT {
             get {
@@ -250,7 +250,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a El turno está en una hora pasada.
+        ///   Busca una cadena traducida similar a El appoint está en una hora pasada.
         /// </summary>
         public static string PAST_TIME_CONFLICT {
             get {
@@ -286,7 +286,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a El turno no está disponible.
+        ///   Busca una cadena traducida similar a El appoint no está disponible.
         /// </summary>
         public static string SLOT_NOT_AVAILABLE_CONFLICT {
             get {
@@ -295,11 +295,11 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Las disponibilidades no pueden solaparse.
+        ///   Busca una cadena traducida similar a Las availabilities no pueden solaparse.
         /// </summary>
-        public static string SOLAPAMIENTO_CONFLICT {
+        public static string OVERLAP_CONFLICT {
             get {
-                return ResourceManager.GetString("SOLAPAMIENTO_CONFLICT", resourceCulture);
+                return ResourceManager.GetString("OVERLAP_CONFLICT", resourceCulture);
             }
         }
         
@@ -322,7 +322,7 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a El tiempo de inicio del turno no puede ser mayor o igual al tiempo de finalización.
+        ///   Busca una cadena traducida similar a El tiempo de inicio del appoint no puede ser mayor o igual al tiempo de finalización.
         /// </summary>
         public static string START_TIME_ERROR {
             get {

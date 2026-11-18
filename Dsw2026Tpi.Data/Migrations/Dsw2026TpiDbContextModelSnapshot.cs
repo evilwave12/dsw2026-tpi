@@ -28,23 +28,23 @@ namespace Dsw2026Tpi.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("Attended_at")
+                    b.Property<DateTime?>("AttendedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("Cancelled_at")
+                    b.Property<DateTime?>("CancelledAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Patient_Id")
+                    b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("Slot_Id")
+                    b.Property<Guid>("SlotId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
@@ -55,9 +55,9 @@ namespace Dsw2026Tpi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Patient_Id");
+                    b.HasIndex("PatientId");
 
-                    b.HasIndex("Slot_Id");
+                    b.HasIndex("SlotId");
 
                     b.ToTable("Appointments", (string)null);
                 });
@@ -71,19 +71,19 @@ namespace Dsw2026Tpi.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte>("Day_of_the_week")
+                    b.Property<byte>("DayOfTheWeek")
                         .HasColumnType("tinyint");
 
-                    b.Property<Guid>("Doctor_Id")
+                    b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeOnly>("End_time")
+                    b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
                     b.Property<byte>("Month")
                         .HasColumnType("tinyint");
 
-                    b.Property<TimeOnly>("Start_time")
+                    b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -94,7 +94,7 @@ namespace Dsw2026Tpi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Doctor_Id");
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("Availabilities", (string)null);
                 });
@@ -114,13 +114,13 @@ namespace Dsw2026Tpi.Data.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<TimeOnly>("End_time")
+                    b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<DateOnly>("Slot_date")
+                    b.Property<DateOnly>("SlotDate")
                         .HasColumnType("date");
 
-                    b.Property<TimeOnly>("Start_time")
+                    b.Property<TimeOnly>("StartTime")
                         .HasColumnType("time");
 
                     b.Property<int>("Status")
@@ -231,13 +231,13 @@ namespace Dsw2026Tpi.Data.Migrations
                 {
                     b.HasOne("Dsw2026Tpi.Domain.Entities.Patient", "Patient")
                         .WithMany()
-                        .HasForeignKey("Patient_Id")
+                        .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Dsw2026Tpi.Domain.Entities.AvailabilitySlot", "Slot")
                         .WithMany()
-                        .HasForeignKey("Slot_Id")
+                        .HasForeignKey("SlotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -250,7 +250,7 @@ namespace Dsw2026Tpi.Data.Migrations
                 {
                     b.HasOne("Dsw2026Tpi.Domain.Entities.Doctor", "Doctor")
                         .WithMany()
-                        .HasForeignKey("Doctor_Id")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

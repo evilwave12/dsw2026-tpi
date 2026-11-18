@@ -40,9 +40,9 @@ public class DoctorService : IDoctorService
     {
         var doctor = await _persistence.GetById<Doctor>(id_doctor) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        var disponibilidades = await _persistence.GetFiltered<Availability>(a => a.Doctor_Id == id_doctor);
+        var availabilities = await _persistence.GetFiltered<Availability>(a => a.DoctorId == id_doctor);
           
-        return disponibilidades.Select(d => new DoctorModel.ResponseAvailability(d.Id, ((DiaSemana)d.Day_of_the_week).ToString(), d.Start_time, d.End_time));
+        return availabilities.Select(d => new DoctorModel.ResponseAvailability(d.Id, ((DiaSemana)d.DayOfTheWeek).ToString(), d.StartTime, d.EndTime));
     }
 
     public async Task<Doctor> Add(DoctorModel.Request doctor)
@@ -55,9 +55,9 @@ public class DoctorService : IDoctorService
         if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.EMPTY_LICENSE_ERROR, nameof(ErrorCodes.EMPTY_LICENSE_ERROR));
         if (doctor.LicenseNumber.Length > 50) throw new ValidationException(ErrorCodes.INVALID_LICENSE_ERROR, nameof(ErrorCodes.INVALID_LICENSE_ERROR));
 
-        var matricula = await _persistence.GetFiltered<Doctor>(d => d.LicenseNumber == doctor.LicenseNumber);
+        var license = await _persistence.GetFiltered<Doctor>(d => d.LicenseNumber == doctor.LicenseNumber);
 
-        if (matricula.Any()) throw new ConflictException(ErrorCodes.DUPLICATE_LICENSE_ERROR, nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR)).WithDetail("licenseNumber", "license_number_already_exists");
+        if (license.Any()) throw new ConflictException(ErrorCodes.DUPLICATE_LICENSE_ERROR, nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR)).WithDetail("licenseNumber", "license_number_already_exists");
 
         var specialty = await _persistence.GetById<Specialty>(doctor.SpecialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
         if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));

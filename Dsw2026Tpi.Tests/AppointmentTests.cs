@@ -66,7 +66,7 @@ namespace Dsw2026Tpi.Tests
 
             //Assert
 
-            Assert.Equal(nameof(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT),exception.Error.ErrorCode);
+            Assert.Equal(nameof(ErrorCodes.SLOT_NOT_AVAILABLE_CONFLICT),exception.Error.errorCode);
 
         }
 
@@ -150,7 +150,7 @@ namespace Dsw2026Tpi.Tests
 
             //Assert
 
-            Assert.Equal(nameof(ErrorCodes.PAST_DATE_CONFLICT), exception.Error.ErrorCode);
+            Assert.Equal(nameof(ErrorCodes.PAST_DATE_CONFLICT), exception.Error.errorCode);
         }
 
     }
