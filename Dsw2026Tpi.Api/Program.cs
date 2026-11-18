@@ -52,6 +52,7 @@ public class Program
                 app.UseSwaggerUI();
             }
 
+            
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseRateLimiter(); // rate limiting
