@@ -67,15 +67,23 @@ public class PersistenceEf : IPersistence
 
     public async Task<Pagination<T>> Paginate<T, TKey>(int pageSize, int pageIndex, Expression<Func<T, bool>> predicate, Expression<Func<T, TKey>> sortOrder, params string[] includes) where T : EntityBase
     {
-        pageSize = Math.Abs(pageSize);
-        pageIndex = Math.Abs(pageIndex) == 0 ? 0 : Math.Abs(pageIndex) - 1;
-
         var filtered = Include(_context.Set<T>(), includes)
                  .Where(predicate)
                  .OrderBy(sortOrder);
 
         var total = await filtered.CountAsync();
 
+        // Si pageSize es 0 (no enviado), devolver todos los registros sin paginar, modificacion realizada por el front en la sección de disponibilidad para la lista desplegable de doctores
+        if (pageSize <= 0)
+        {
+            var allData = await filtered.ToListAsync();
+            return new Pagination<T>(total, 0, allData, total);
+        }
+
+        //pageSize = Math.Abs(pageSize);
+        //////////////////////////////////////////////////////////
+
+        pageIndex = Math.Abs(pageIndex) == 0 ? 0 : Math.Abs(pageIndex) - 1;
 
         async Task<Pagination<T>> GetPage(int skip, int take)
         {
