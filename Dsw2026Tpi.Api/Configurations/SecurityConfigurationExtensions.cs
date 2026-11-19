@@ -74,7 +74,7 @@ public static class SecurityConfigurationExtensions
             allowedOrigins =
             [
                 "http://localhost",
-                "https://localhost"
+                "https://localhost",
             ];
         }
 
