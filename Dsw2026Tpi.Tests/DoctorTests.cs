@@ -58,12 +58,12 @@ namespace Dsw2026Tpi.Tests
 
             var doctorRequest = new DoctorModel.Request("Dr. Strange", "MAT456",specialtyId);
             var doctor = new Doctor(doctorId, "Dr. Strange", "MAT456", Guid.NewGuid());
-            var specialty = new Specialty("Podología","Especialistas en pies",specialtyId);
+            var specialty = new Specialty("Podología","Especialistas en pies",true,specialtyId);
 
             specialty.Deactivate();
 
             _mockPersistence.GetById<Doctor>(doctorId).Returns(doctor);
-            _mockPersistence.GetById<Specialty>(doctorRequest.SpecialtyId).Returns(specialty);
+            _mockPersistence.GetById<Specialty>(doctorRequest.specialtyId).Returns(specialty);
 
             //Act
 

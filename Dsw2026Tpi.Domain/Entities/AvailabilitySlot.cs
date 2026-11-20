@@ -9,7 +9,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public DateOnly SlotDate { get; init; }
         public TimeOnly StartTime { get; init; }
         public TimeOnly EndTime { get; init; }
-        public bool Deleted { get; private set; } = false;
+        public bool IsActive { get; private set; } = false;
         public AvailabilitySlotStatus Status { get; set; } = AvailabilitySlotStatus.Available;
         public Guid AvailabilityId { get; set; }
         public Availability Availability { get; set; } //prop navegacion
@@ -32,7 +32,7 @@ namespace Dsw2026Tpi.Domain.Entities
         }
         public void Deactivate()
         {
-            Deleted = true;
+            IsActive = true;
         }
     }
 }

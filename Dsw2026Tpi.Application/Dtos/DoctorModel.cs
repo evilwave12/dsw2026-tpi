@@ -2,9 +2,9 @@
 
 public record DoctorModel
 {
-    public record Request(string Name, string LicenseNumber, Guid SpecialtyId);
-    public record Response(Guid Id, string Name, string LicenseNumber, bool IsActive,SpecialtyDto? Specialty);
-    public record ResponseAvailability(Guid id, string day,TimeOnly starTime, TimeOnly endTime);
-    public record SpecialtyDto(Guid? SpecialtyId, string? Name);
+    public record Request(string name, string licenseNumber, Guid specialtyId);
+    public record Response(Guid id, string name, string licenseNumber, bool isActive, SpecialtyDto? specialty);
+    public record ResponseAvailability(Guid id, string day,TimeOnly startTime, TimeOnly endTime);
+    public record SpecialtyDto(Guid? specialtyId, string? name);
 
 }

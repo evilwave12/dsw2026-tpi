@@ -39,11 +39,11 @@ public class DoctorService : IDoctorService
         }
     }
 
-    public async Task<IEnumerable<DoctorModel.ResponseAvailability>> GetAvailabilities(Guid id_doctor)
+    public async Task<IEnumerable<DoctorModel.ResponseAvailability>> GetAvailabilities(Guid idDoctor)
     {
-        var doctor = await _persistence.GetById<Doctor>(id_doctor) ?? throw new EntityNotFoundException(nameof(Doctor));
+        var doctor = await _persistence.GetById<Doctor>(idDoctor) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        var availabilities = await _persistence.GetFiltered<Availability>(a => a.DoctorId == id_doctor);
+        var availabilities = await _persistence.GetFiltered<Availability>(a => a.DoctorId == idDoctor);
           
         return availabilities.Select(d => new DoctorModel.ResponseAvailability(d.Id, ((DiaSemana)d.DayOfTheWeek).ToString(), d.StartTime, d.EndTime));
     }
@@ -51,22 +51,22 @@ public class DoctorService : IDoctorService
     public async Task<Doctor> Add(DoctorModel.Request doctor)
     {
         #region Validaciones
-        if (string.IsNullOrWhiteSpace(doctor.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
+        if (string.IsNullOrWhiteSpace(doctor.name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-        if(doctor.Name.Length > 100 || doctor.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
+        if(doctor.name.Length > 100 || doctor.name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-        if (string.IsNullOrWhiteSpace(doctor.LicenseNumber)) throw new ValidationException(ErrorCodes.EMPTY_LICENSE_ERROR, nameof(ErrorCodes.EMPTY_LICENSE_ERROR));
-        if (doctor.LicenseNumber.Length > 50) throw new ValidationException(ErrorCodes.INVALID_LICENSE_ERROR, nameof(ErrorCodes.INVALID_LICENSE_ERROR));
+        if (string.IsNullOrWhiteSpace(doctor.licenseNumber)) throw new ValidationException(ErrorCodes.EMPTY_LICENSE_ERROR, nameof(ErrorCodes.EMPTY_LICENSE_ERROR));
+        if (doctor.licenseNumber.Length > 50) throw new ValidationException(ErrorCodes.INVALID_LICENSE_ERROR, nameof(ErrorCodes.INVALID_LICENSE_ERROR));
 
-        var license = await _persistence.GetFiltered<Doctor>(d => d.LicenseNumber == doctor.LicenseNumber);
+        var license = await _persistence.GetFiltered<Doctor>(d => d.LicenseNumber == doctor.licenseNumber);
 
         if (license.Any()) throw new ConflictException(ErrorCodes.DUPLICATE_LICENSE_ERROR, nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR)).WithDetail("licenseNumber", "license_number_already_exists");
 
-        var specialty = await _persistence.GetById<Specialty>(doctor.SpecialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
-        if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
+        var specialty = await _persistence.GetById<Specialty>(doctor.specialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
+        if (specialty.IsActive) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
         #endregion
 
-        var newDoctor = await _persistence.Add(new Doctor(doctor.Name, doctor.LicenseNumber, doctor.SpecialtyId));
+        var newDoctor = await _persistence.Add(new Doctor(doctor.name, doctor.licenseNumber, doctor.specialtyId));
 
         _logger.LogInformation($"Doctor {newDoctor.Name} creado exitosamente con matrícula {newDoctor.LicenseNumber} y especialidad {specialty.Name}");
 
@@ -78,23 +78,23 @@ public class DoctorService : IDoctorService
         #region Validaciones
         var doctorExistente = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        if (string.IsNullOrWhiteSpace(doctorRequest.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
+        if (string.IsNullOrWhiteSpace(doctorRequest.name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-        if (doctorRequest.Name.Length > 100 || doctorRequest.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
+        if (doctorRequest.name.Length > 100 || doctorRequest.name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-        if (string.IsNullOrWhiteSpace(doctorRequest.LicenseNumber)) throw new ValidationException(ErrorCodes.EMPTY_LICENSE_ERROR, nameof(ErrorCodes.EMPTY_LICENSE_ERROR));
-        if (doctorRequest.LicenseNumber.Length > 50) throw new ValidationException(ErrorCodes.INVALID_LICENSE_ERROR, nameof(ErrorCodes.INVALID_LICENSE_ERROR));
+        if (string.IsNullOrWhiteSpace(doctorRequest.licenseNumber)) throw new ValidationException(ErrorCodes.EMPTY_LICENSE_ERROR, nameof(ErrorCodes.EMPTY_LICENSE_ERROR));
+        if (doctorRequest.licenseNumber.Length > 50) throw new ValidationException(ErrorCodes.INVALID_LICENSE_ERROR, nameof(ErrorCodes.INVALID_LICENSE_ERROR));
         #endregion
 
-        doctorExistente.Name = doctorRequest.Name;
-        doctorExistente.LicenseNumber = doctorRequest.LicenseNumber;
+        doctorExistente.Name = doctorRequest.name;
+        doctorExistente.LicenseNumber = doctorRequest.licenseNumber;
 
-        var specialty = await _persistence.GetById<Specialty>(doctorRequest.SpecialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
-        if (doctorExistente.SpecialtyId != doctorRequest.SpecialtyId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
+        var specialty = await _persistence.GetById<Specialty>(doctorRequest.specialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
+        if (doctorExistente.SpecialtyId != doctorRequest.specialtyId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
         {
-            if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
+            if (specialty.IsActive) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
 
-            doctorExistente.SpecialtyId = doctorRequest.SpecialtyId;
+            doctorExistente.SpecialtyId = doctorRequest.specialtyId;
         }
 
         var now = DateTime.Now;

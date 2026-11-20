@@ -7,7 +7,7 @@ public class Specialty: EntityBase
 {
     public string Name { get; set; }
     public string Description { get; set; }
-    public bool Deleted { get; private set; } = false;
+    public bool IsActive { get; private set; } = true;
 
     #region Constructor for EF
 #pragma warning disable CS8618
@@ -15,10 +15,11 @@ public class Specialty: EntityBase
 #pragma warning restore CS8618
     #endregion
 
-    public Specialty(string name, string description, Guid? id = null) : base(id)
+    public Specialty(string name, string description, bool isActive, Guid? id = null) : base(id)
     {
         Name = name;
         Description = description;
+        IsActive = isActive;
     }
 
     [JsonConstructor]
@@ -30,6 +31,6 @@ public class Specialty: EntityBase
 
     public void Deactivate()
     {
-        Deleted = true;
+        IsActive = false;
     }
 }
