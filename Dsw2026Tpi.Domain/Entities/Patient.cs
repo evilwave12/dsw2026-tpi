@@ -10,7 +10,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public string? Name { get; init; }
         public string Dni { get; private set; }
         public Guid UserId { get; set;}
-        public bool Deleted { get; private set; } = false;
+        public bool IsActive { get; private set; } = false;
 
         #region Constructor for EF
 #pragma warning disable CS8618
@@ -29,7 +29,7 @@ namespace Dsw2026Tpi.Domain.Entities
 
         public void Deactivate()
         {
-            Deleted = true;
+            IsActive = true;
         }
     }
 

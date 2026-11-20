@@ -6,7 +6,7 @@ namespace Dsw2026Tpi.Application.Dtos
 {
     public record SpecialtyModel
     {
-        public record Request(string Name, string Description);
-        public record Response(Guid Id, string Name, string Description);
+        public record Request(string name, string description, bool isActive);
+        public record Response(Guid id, string name, string description, bool isActive);
     }
 }

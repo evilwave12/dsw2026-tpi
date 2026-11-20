@@ -229,7 +229,7 @@ namespace Dsw2026Tpi.Data.Migrations.Identity
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Deleted")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdatedAt")

@@ -30,31 +30,34 @@ namespace Dsw2026Tpi.Application.Services
                 throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
             }
 
-            var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
-                                                       s.Name.Contains(name)) && !s.Deleted, x => x.Name);
+            /*var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
+                                                       s.Name.Contains(name)) && !s.IsActive, x => x.Name);*/
 
-            return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description));
+            var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
+                                                       s.Name.Contains(name)), x => x.Name);
+
+            return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description,s.IsActive));
         }
 
         public async Task<Specialty> Add(SpecialtyModel.Request specialty)
         {
             #region Validaciones
-            if (string.IsNullOrWhiteSpace(specialty.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
+            if (string.IsNullOrWhiteSpace(specialty.name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-            if (specialty.Name.Length > 100 || specialty.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));  
+            if (specialty.name.Length > 100 || specialty.name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));  
             
-            var especialidades = await _persistence.First<Specialty>(s => s.Name == specialty.Name);
+            var especialidades = await _persistence.First<Specialty>(s => s.Name == specialty.name);
 
             if (especialidades != null) throw new ConflictException(ErrorCodes.SPECIALTY_EXISTS, nameof(ErrorCodes.SPECIALTY_EXISTS)).WithDetail("name", "specialty_already_exists");
                    
-            if (string.IsNullOrWhiteSpace(specialty.Description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
+            if (string.IsNullOrWhiteSpace(specialty.description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
 
-            if (specialty.Description.Length > 100 || specialty.Description.Length < 10) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
+            if (specialty.description.Length > 100 || specialty.description.Length < 10) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
             #endregion
 
-            _logger.LogInformation($"Especialidad {specialty.Name} creada exitosamente con descripción {specialty.Description}");
+            _logger.LogInformation($"Especialidad {specialty.name} creada exitosamente con descripción {specialty.description}");
 
-            return await _persistence.Add(new Specialty(specialty.Name, specialty.Description));
+            return await _persistence.Add(new Specialty(specialty.name, specialty.description, specialty.isActive));
             
         }
 
@@ -62,7 +65,7 @@ namespace Dsw2026Tpi.Application.Services
         {
             var specialty = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
 
-            if (specialty.Deleted)
+            if (!specialty.IsActive)
             {
                 throw new ConflictException(ErrorCodes.SPECIALTY_INACTIVE, nameof(ErrorCodes.SPECIALTY_INACTIVE));
             }
@@ -82,19 +85,19 @@ namespace Dsw2026Tpi.Application.Services
             #region Validaciones
             var specialty2 = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
 
-            if (specialty2.Deleted) throw new ConflictException(ErrorCodes.SPECIALTY_INACTIVE, nameof(ErrorCodes.SPECIALTY_INACTIVE)).WithDetail("specialtyDeleted", "specialty_already_deleted");
+            //if (!specialty2.IsActive) throw new ConflictException(ErrorCodes.SPECIALTY_INACTIVE, nameof(ErrorCodes.SPECIALTY_INACTIVE)).WithDetail("specialtyDeleted", "specialty_already_deleted");
 
-            if (string.IsNullOrWhiteSpace(specialty.Name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
+            if (string.IsNullOrWhiteSpace(specialty.name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
-            if (specialty.Name.Length > 101 || specialty.Name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
+            if (specialty.name.Length > 101 || specialty.name.Length < 3) throw new ValidationException(ErrorCodes.NAME_ERROR, nameof(ErrorCodes.NAME_ERROR));
 
-            if (string.IsNullOrWhiteSpace(specialty.Description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
+            if (string.IsNullOrWhiteSpace(specialty.description)) throw new ValidationException(ErrorCodes.EMPTY_DESCRIPTION_ERROR, nameof(ErrorCodes.EMPTY_DESCRIPTION_ERROR));
 
-            if (specialty.Description.Length > 101 || specialty.Description.Length < 11) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
+            if (specialty.description.Length > 101 || specialty.description.Length < 11) throw new ValidationException(ErrorCodes.DESCRIPTION_ERROR, nameof(ErrorCodes.DESCRIPTION_ERROR));
             #endregion
 
-            specialty2.Name = specialty.Name;
-            specialty2.Description = specialty.Description;
+            specialty2.Name = specialty.name;
+            specialty2.Description = specialty.description;
 
             var now = DateTime.Now;
             specialty2.UpdatedAt = new DateTime(now.Year,now.Month,now.Day,now.Hour,now.Minute,now.Second);
