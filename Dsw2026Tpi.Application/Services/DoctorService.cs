@@ -28,10 +28,13 @@ public class DoctorService : IDoctorService
         }
         else 
         {
-            var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => (string.IsNullOrWhiteSpace(name) ||
-                                                       d.Name.Contains(name)) && d.IsActive, x => x.Name, nameof(Doctor.Specialty));
+            /*var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => (string.IsNullOrWhiteSpace(name) ||
+                                                       d.Name.Contains(name)) && d.IsActive, x => x.Name, nameof(Doctor.Specialty));*/
 
-            return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,
+            var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => (string.IsNullOrWhiteSpace(name) ||
+                                                       d.Name.Contains(name)), x => x.Name, nameof(Doctor.Specialty));
+
+            return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,d.IsActive,
             new DoctorModel.SpecialtyDto(d.Specialty?.Id, d.Specialty?.Name)));
         }
     }
