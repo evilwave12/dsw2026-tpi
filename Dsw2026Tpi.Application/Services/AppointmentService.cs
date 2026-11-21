@@ -31,7 +31,7 @@ public class AppointmentService : IAppointmentService
         if (appointment.patient.dni.Length < 7 || appointment.patient.dni.Length > 10)
             throw new ValidationException(ErrorCodes.INVALID_DNI_ERROR, nameof(ErrorCodes.INVALID_DNI_ERROR));
 
-        var patient = await _persistence.First<Patient>(p => p.Dni == appointment.patient.dni && p.Deleted == false)
+        var patient = await _persistence.First<Patient>(p => p.Dni == appointment.patient.dni)
             ?? throw new EntityNotFoundException(nameof(Patient));
 
         if (slot.Status != AvailabilitySlotStatus.Available)
@@ -77,7 +77,7 @@ public class AppointmentService : IAppointmentService
 
     public async Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni)
     {
-        var patient = await _persistence.First<Patient>(p => p.Dni == dni && p.Deleted == false)
+        var patient = await _persistence.First<Patient>(p => p.Dni == dni)
             ?? throw new EntityNotFoundException(nameof(Patient));
 
         var activeAppointments = await _persistence.GetFiltered<Appointment>(
