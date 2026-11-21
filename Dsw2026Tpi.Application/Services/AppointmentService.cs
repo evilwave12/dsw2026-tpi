@@ -32,7 +32,7 @@ namespace Dsw2026Tpi.Application.Services
 
             if (appointment.patient.dni.Length < 7 || appointment.patient.dni.Length > 10) throw new ValidationException(ErrorCodes.INVALID_DNI_ERROR, nameof(ErrorCodes.INVALID_DNI_ERROR)); //DNI inválido
 
-            var patient = await _persistence.First<Patient>(p => p.Dni == appointment.patient.dni && p.IsActive == false) ?? throw new EntityNotFoundException(nameof(Patient));
+            var patient = await _persistence.First<Patient>(p => p.Dni == appointment.patient.dni) ?? throw new EntityNotFoundException(nameof(Patient));
 
             if (slot.Status != AvailabilitySlotStatus.Available)
             {
@@ -64,10 +64,9 @@ namespace Dsw2026Tpi.Application.Services
 
         public async Task<IEnumerable<AppointmentModel.Response>> GetActiveAppointmentsByPatientDni(string dni) { 
 
-            var patient = await _persistence.First<Patient>(p => p.Dni == dni && p.IsActive) ??
-                throw new EntityNotFoundException(nameof(Patient));
+            var patient = await _persistence.First<Patient>(p => p.Dni == dni) ?? throw new EntityNotFoundException(nameof(Patient));
 
-            var activeAppointments = await _persistence.GetFiltered<Appointment>(a => a.PatientId == patient.Id && a.Status == AppointmentStatus.Booked);
+            var activeAppointments = await _persistence.GetFiltered<Appointment>(a => a.PatientId == patient.Id && a.Status == AppointmentStatus.Booked && !a.Deleted);
 
             var appointmentsList = new List<AppointmentModel.Response>();
 
@@ -86,8 +85,9 @@ namespace Dsw2026Tpi.Application.Services
         public async Task CancelAppointment(Guid id) 
         {
             #region Validaciones
-            var appointment = await _persistence.GetById<Appointment>(id)
-                ?? throw new EntityNotFoundException(nameof(Appointment));
+            var appointment = await _persistence.GetById<Appointment>(id);
+
+            if(appointment == null || appointment.Deleted) throw new EntityNotFoundException(nameof(Appointment));
 
             if (appointment.Status == AppointmentStatus.Cancelled) throw new ConflictException(ErrorCodes.INVALID_APPOINTMENT_STATUS, nameof(ErrorCodes.INVALID_APPOINTMENT_STATUS)).WithDetail("appointmentStatus", "status_already_cancelled");
 
@@ -125,8 +125,9 @@ namespace Dsw2026Tpi.Application.Services
                 var availability = await _persistence.GetById<Availability>(slot.AvailabilityId);
 
                 var doctor = await _persistence.GetById<Doctor>(availability.DoctorId);
+                if(doctor == null || doctor.Deleted) throw new EntityNotFoundException(nameof(Doctor));
 
-                var appointment = await _persistence.First<Appointment>(a => a.SlotId == slot.Id && a.Status == AppointmentStatus.Booked);
+                var appointment = await _persistence.First<Appointment>(a => a.SlotId == slot.Id && a.Status == AppointmentStatus.Booked && !a.Deleted);
 
                 var patient = await _persistence.GetById<Patient>(appointment.PatientId);
 

@@ -34,9 +34,9 @@ namespace Dsw2026Tpi.Application.Services
                                                        s.Name.Contains(name)) && !s.IsActive, x => x.Name);*/
 
             var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex, s => (string.IsNullOrWhiteSpace(name) ||
-                                                       s.Name.Contains(name)), x => x.Name);
+                                                       s.Name.Contains(name)) && !s.Deleted, x => x.Name);
 
-            return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description,s.IsActive));
+            return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description));
         }
 
         public async Task<Specialty> Add(SpecialtyModel.Request specialty)
@@ -57,20 +57,20 @@ namespace Dsw2026Tpi.Application.Services
 
             _logger.LogInformation($"Especialidad {specialty.name} creada exitosamente con descripción {specialty.description}");
 
-            return await _persistence.Add(new Specialty(specialty.name, specialty.description, specialty.isActive));
+            return await _persistence.Add(new Specialty(specialty.name, specialty.description));
             
         }
 
         public async Task Delete(Guid id)
         {
-            var specialty = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
+            var specialty = await _persistence.GetById<Specialty>(id);
 
-            if (!specialty.IsActive)
+            if (specialty is null || specialty.Deleted)
             {
-                throw new ConflictException(ErrorCodes.SPECIALTY_INACTIVE, nameof(ErrorCodes.SPECIALTY_INACTIVE));
+                throw new EntityNotFoundException(nameof(Specialty));
             }
 
-            specialty.Deactivate();
+            specialty.Delete();
 
             var now = DateTime.Now;
             specialty.UpdatedAt = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
@@ -83,7 +83,12 @@ namespace Dsw2026Tpi.Application.Services
         public async Task <Specialty> Update(Guid id, SpecialtyModel.Request specialty)
         {
             #region Validaciones
-            var specialty2 = await _persistence.GetById<Specialty>(id) ?? throw new EntityNotFoundException(nameof(Specialty));
+            var specialty2 = await _persistence.GetById<Specialty>(id); 
+
+            if (specialty2 is null || specialty2.Deleted)
+            {
+                throw new EntityNotFoundException(nameof(Specialty));
+            }
 
             //if (!specialty2.IsActive) throw new ConflictException(ErrorCodes.SPECIALTY_INACTIVE, nameof(ErrorCodes.SPECIALTY_INACTIVE)).WithDetail("specialtyDeleted", "specialty_already_deleted");
 

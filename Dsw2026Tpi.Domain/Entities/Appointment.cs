@@ -12,6 +12,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public AppointmentStatus Status { get; set; } = AppointmentStatus.Booked;
         public Guid SlotId { get; set; }
         public Guid PatientId { get; set; }
+        public bool Deleted { get; private set; } = false;
 
         public AvailabilitySlot Slot { get; private set; } //propiedad navegacion
         public Patient Patient { get; private set; } //propiedad navegacion
@@ -31,6 +32,11 @@ namespace Dsw2026Tpi.Domain.Entities
             PatientId = patientId;
             CreatedAt = DateTime.Now;
             UpdatedAt = DateTime.Now;
+        }
+
+        public void Delete()
+        {
+            Deleted = true;
         }
     }
 }

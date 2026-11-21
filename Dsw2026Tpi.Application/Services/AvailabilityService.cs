@@ -43,7 +43,7 @@ namespace Dsw2026Tpi.Application.Services
 
             var doctor = await _persistence.GetById<Doctor>(request.DoctorId);
 
-            if (doctor == null || !doctor.IsActive) throw new EntityNotFoundException(nameof(Doctor));
+            if (doctor == null || doctor.Deleted) throw new EntityNotFoundException(nameof(Doctor));
             
             var currentDate = DateTime.Now;
             var currentMonth = (byte)currentDate.Month;
