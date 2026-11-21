@@ -10,7 +10,6 @@ namespace Dsw2026Tpi.Api.Controllers;
 
 
 [Route("api/appointments")]
-//[Authorize(Policy = Policies.AdminPolicy)]
 public class AppointmentController : AppController
 {
     private readonly IAppointmentService _service;
