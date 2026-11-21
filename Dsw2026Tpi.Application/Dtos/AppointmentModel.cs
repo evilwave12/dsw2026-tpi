@@ -6,8 +6,10 @@ public record AppointmentModel
 {
     public record PatientDto(string dni);
     public record Request(Guid doctorId, Guid availabilitySlotId, PatientDto patient, string reason);
-    public record Response(Guid doctorId, string doctorName, string patientDni, string patientName,TimeOnly startTime, TimeOnly endTime); //admin endpoint 1
+    public record Response(Guid appointmentId,Guid doctorId, string doctorName, string patientDni, 
+                            string patientName,TimeOnly startTime, TimeOnly endTime); //admin endpoint 1
 
+    //agregie appointmentId  :p ↑
 
     //admin endpoint 2
     public record PatientResponse(string dni, string fullName);
