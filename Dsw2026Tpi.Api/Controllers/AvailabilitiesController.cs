@@ -11,7 +11,6 @@ namespace Dsw2026Tpi.Api.Controllers;
 
 
 [Route("api/availabilities")]
-//[Authorize(Policy = Policies.AdminPolicy)]
 public class AvailabilitiesController : AppController
 {
     private readonly IAvailabilityService _service;
@@ -22,6 +21,7 @@ public class AvailabilitiesController : AppController
     }
 
     [HttpPost]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Add([FromBody] AvailabilityModel.Request request)
     {
@@ -30,10 +30,20 @@ public class AvailabilitiesController : AppController
     }
 
     [HttpPut]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] AvailabilityModel.Request request)
     {
         var availability = await _service.Update(request);
         return Ok(availability);
+    }
+
+    [HttpGet("{id}/availabilitySlots")]
+    [Authorize(Policy = Policies.PatientPolicy)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAvailabilitySlots([FromRoute] Guid id)
+    {
+        var availabilities = await _service.GetAvailabilitySlots(id);
+        return Ok(availabilities);
     }
 }

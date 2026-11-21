@@ -10,6 +10,7 @@ namespace Dsw2026Tpi.Application.Dtos
         public record Response(string dayOfTheWeek, string startTime, string endTime);
         public record DayRequest(string dayOfTheWeek, TimeOnly startTime, TimeOnly endTime);
         public record Request(Guid DoctorId, IEnumerable<DayRequest> Days);
+        public record ResponseAvailabilitySlots(Guid id, DateOnly day, TimeOnly startTime, TimeOnly endTime);
     }
 
     public enum DiaSemana : byte

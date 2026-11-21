@@ -12,5 +12,6 @@ namespace Dsw2026Tpi.Application.Interfaces
         Task<IEnumerable<AvailabilityModel.Response>> CreateAvailabilitiesAsync(AvailabilityModel.Request request);
         Task ValidationAvailabilitiesAsync(AvailabilityModel.Request request);
         Task<IEnumerable<AvailabilityModel.Response>> Update(AvailabilityModel.Request request);
+        Task<IEnumerable<AvailabilityModel.ResponseAvailabilitySlots>> GetAvailabilitySlots(Guid idAvailability);
     }
 }
