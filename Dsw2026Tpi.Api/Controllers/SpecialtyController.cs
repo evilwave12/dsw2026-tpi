@@ -25,6 +25,14 @@ public class SpecialtyController : AppController
         return Ok(specialties);
     }
 
+    [HttpGet("withDoctors")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetWithDoctors()
+    {
+        var specialties = await _service.GetWithDoctors();
+        return Ok(specialties);
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task <IActionResult> Add([FromBody] SpecialtyModel.Request specialty)

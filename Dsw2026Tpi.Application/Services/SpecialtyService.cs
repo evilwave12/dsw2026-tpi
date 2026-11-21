@@ -39,6 +39,25 @@ namespace Dsw2026Tpi.Application.Services
             return specialties.Map(s => new SpecialtyModel.Response(s.Id, s.Name, s.Description));
         }
 
+        public async Task<IEnumerable<SpecialtyModel.ResponseWithDoctors>> GetWithDoctors()
+        {
+            var specialties = await _persistence.GetAll<Specialty>();
+
+            var specialtiesWithDoctors = new List<SpecialtyModel.ResponseWithDoctors>(); //ir guardando las availabilities creadas para devolverlas al final
+
+            foreach (var spec in specialties)
+            {
+                var doctors = await _persistence.GetFiltered<Doctor>(d => d.SpecialtyId == spec.Id && !d.Deleted);
+
+                var doctorResponses = doctors.Select(d => new DoctorModel.Response(d.Id, d.Name,d.LicenseNumber,d.IsActive,null)).ToList();
+
+                specialtiesWithDoctors.Add(new SpecialtyModel.ResponseWithDoctors(spec.Id, spec.Name, spec.Description, doctorResponses));
+            }
+            
+            return specialtiesWithDoctors;
+        }
+       
+
         public async Task<Specialty> Add(SpecialtyModel.Request specialty)
         {
             #region Validaciones
