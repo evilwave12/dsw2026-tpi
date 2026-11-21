@@ -232,6 +232,17 @@ namespace Dsw2026Tpi.Application.Services
             await ValidationAvailabilitiesAsync(request);
             return availabilities2;
         }
+
+        public async Task<IEnumerable<AvailabilityModel.ResponseAvailabilitySlots>> GetAvailabilitySlots(Guid idAvailability)
+        {
+            var availability = await _persistence.GetById<Availability>(idAvailability);
+
+            if (availability is null) throw new EntityNotFoundException(nameof(Availability));
+
+            var slots = await _persistence.GetFiltered<AvailabilitySlot>(s => s.AvailabilityId == idAvailability && s.Status == AvailabilitySlotStatus.Available);
+
+            return slots.Select(s => new AvailabilityModel.ResponseAvailabilitySlots(s.Id, s.SlotDate, s.StartTime, s.EndTime));
+        }
     }
 
 }

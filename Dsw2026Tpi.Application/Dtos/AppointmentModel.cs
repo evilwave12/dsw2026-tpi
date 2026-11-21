@@ -17,7 +17,5 @@ public record AppointmentModel
     public record SpecialtyResponse(Guid specialtyId, string specialtyName);
 
     public record DoctorResponse(Guid doctorId, string name, SpecialtyResponse specialty);
-    public record ResponseGetBySearch(Guid appointmentsId, AppointmentStatus appointmentsStatus, 
-                                        PatientResponse patient,
-                                        DoctorResponse doctor);     
+    public record ResponseGetBySearch(Guid appointmentsId, AppointmentStatus appointmentsStatus, PatientResponse patient, DoctorResponse doctor);     
 }

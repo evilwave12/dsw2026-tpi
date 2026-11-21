@@ -76,6 +76,7 @@ namespace Dsw2026Tpi.Tests
             //Arrange
             var doctorId = Guid.NewGuid();
             var slotId = Guid.NewGuid();
+            var appointmentId = Guid.NewGuid();
 
             var request = new AppointmentModel.Request
             (
@@ -87,6 +88,7 @@ namespace Dsw2026Tpi.Tests
 
             var expectedResponse = new AppointmentModel.Response
             (
+                appointmentId: appointmentId,
                 doctorId: doctorId,
                 doctorName: "Dr. Perez",
                 patientDni: "45513019",
