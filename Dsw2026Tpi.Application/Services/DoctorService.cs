@@ -32,7 +32,7 @@ public class DoctorService : IDoctorService
                                                        d.Name.Contains(name)) && d.IsActive, x => x.Name, nameof(Doctor.Specialty));*/
 
             var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => (string.IsNullOrWhiteSpace(name) ||
-                                                       d.Name.Contains(name)), x => x.Name, nameof(Doctor.Specialty));
+                                                       d.Name.Contains(name)) && !d.Deleted, x => x.Name, nameof(Doctor.Specialty));
 
             return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,d.IsActive,
             new DoctorModel.SpecialtyDto(d.Specialty?.Id, d.Specialty?.Name)));
@@ -41,8 +41,10 @@ public class DoctorService : IDoctorService
 
     public async Task<IEnumerable<DoctorModel.ResponseAvailability>> GetAvailabilities(Guid idDoctor)
     {
-        var doctor = await _persistence.GetById<Doctor>(idDoctor) ?? throw new EntityNotFoundException(nameof(Doctor));
-
+        var doctor = await _persistence.GetById<Doctor>(idDoctor);
+        
+        if(doctor is null || doctor.Deleted) throw new EntityNotFoundException(nameof(Doctor));
+        
         var availabilities = await _persistence.GetFiltered<Availability>(a => a.DoctorId == idDoctor);
           
         return availabilities.Select(d => new DoctorModel.ResponseAvailability(d.Id, ((DiaSemana)d.DayOfTheWeek).ToString(), d.StartTime, d.EndTime));
@@ -63,7 +65,7 @@ public class DoctorService : IDoctorService
         if (license.Any()) throw new ConflictException(ErrorCodes.DUPLICATE_LICENSE_ERROR, nameof(ErrorCodes.DUPLICATE_LICENSE_ERROR)).WithDetail("licenseNumber", "license_number_already_exists");
 
         var specialty = await _persistence.GetById<Specialty>(doctor.specialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
-        if (specialty.IsActive) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
+        if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
         #endregion
 
         var newDoctor = await _persistence.Add(new Doctor(doctor.name, doctor.licenseNumber, doctor.specialtyId));
@@ -77,6 +79,8 @@ public class DoctorService : IDoctorService
     {
         #region Validaciones
         var doctorExistente = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
+
+        if(doctorExistente is null || doctorExistente.Deleted) throw new EntityNotFoundException(nameof(Doctor));
 
         if (string.IsNullOrWhiteSpace(doctorRequest.name)) throw new ValidationException(ErrorCodes.EMPTY_NAME_ERROR, nameof(ErrorCodes.EMPTY_NAME_ERROR));
 
@@ -92,7 +96,7 @@ public class DoctorService : IDoctorService
         var specialty = await _persistence.GetById<Specialty>(doctorRequest.specialtyId) ?? throw new EntityNotFoundException(nameof(Specialty));
         if (doctorExistente.SpecialtyId != doctorRequest.specialtyId) //si es q se cambia el id de especialidad, actualizar la propia especialidad del medico tambien
         {
-            if (specialty.IsActive) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
+            if (specialty.Deleted) throw new ValidationException(ErrorCodes.INVALID_SPECIALTY_ERROR, nameof(ErrorCodes.INVALID_SPECIALTY_ERROR));
 
             doctorExistente.SpecialtyId = doctorRequest.specialtyId;
         }
@@ -108,9 +112,9 @@ public class DoctorService : IDoctorService
     {
         var doctor = await _persistence.GetById<Doctor>(id) ?? throw new EntityNotFoundException(nameof(Doctor));
 
-        if(!doctor.IsActive) throw new ValidationException(ErrorCodes.DOCTOR_INACTIVE, nameof(ErrorCodes.DOCTOR_INACTIVE));
+        if(doctor.Deleted) throw new ValidationException(ErrorCodes.DOCTOR_INACTIVE, nameof(ErrorCodes.DOCTOR_INACTIVE));
 
-        doctor.Deactivate();
+        doctor.Delete();
 
         var now = DateTime.Now;
         doctor.UpdatedAt = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
