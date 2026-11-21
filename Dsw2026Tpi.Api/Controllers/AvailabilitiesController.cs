@@ -11,7 +11,7 @@ namespace Dsw2026Tpi.Api.Controllers;
 
 
 [Route("api/availabilities")]
-[Authorize(Policy = Policies.AdminPolicy)]
+//[Authorize(Policy = Policies.AdminPolicy)]
 public class AvailabilitiesController : AppController
 {
     private readonly IAvailabilityService _service;
