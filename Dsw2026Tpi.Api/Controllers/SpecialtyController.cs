@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dsw2026Tpi.Api.Controllers;
 
 [Route("api/specialties")]
-//[Authorize(Policy = Policies.AdminPolicy)]
 public class SpecialtyController : AppController
 {
     private readonly ISpecialtyService _service;
@@ -18,6 +17,7 @@ public class SpecialtyController : AppController
     }
 
     [HttpGet]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string? name = null)
     {
@@ -26,6 +26,7 @@ public class SpecialtyController : AppController
     }
 
     [HttpGet("withDoctors")]
+    [Authorize(Policy = Policies.PatientPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetWithDoctors()
     {
@@ -34,6 +35,7 @@ public class SpecialtyController : AppController
     }
 
     [HttpPost]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task <IActionResult> Add([FromBody] SpecialtyModel.Request specialty)
     {
@@ -42,7 +44,7 @@ public class SpecialtyController : AppController
     }
 
     [HttpPut("{id}")]
-
+    [Authorize(Policy = Policies.AdminPolicy)]
     public async Task <IActionResult> Update([FromRoute] Guid id, [FromBody] SpecialtyModel.Request specialty)
     {
         var specialties = await _service.Update(id, specialty);
@@ -50,6 +52,7 @@ public class SpecialtyController : AppController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = Policies.AdminPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
